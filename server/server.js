@@ -18,8 +18,6 @@ app.use(koaBody())
 
 routes(app);
 
-if (require.main === module) {
-  app.listen(PORT, function() {
-    console.log(`Listening on ${PORT}`);
-  });
-}
+app.listen(PORT, function() {
+  console.log(`Listening on ${PORT}`);
+});
