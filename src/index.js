@@ -1,11 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { AppContainer } from 'react-hot-loader'
-import App from './components/App'
 import { Provider } from 'react-redux'
 import { ConnectedRouter } from 'react-router-redux'
-import store, { history } from './store'
 import { Route } from 'react-router-dom';
+
+import store, { history } from './store'
+import App from './components/App'
 
 const render = Component => {
   ReactDOM.render(
