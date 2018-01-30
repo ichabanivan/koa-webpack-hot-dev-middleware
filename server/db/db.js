@@ -6,6 +6,12 @@ db.listTodos = async (ctx) => {
   try {
     ctx.body = await ctx.app.database.collection('todos').find().toArray()
     ctx.status = 200;
+
+    if (ctx.body) {
+      ctx.status = 200;
+    } else {
+      ctx.message = 'error';
+    }
   } catch (e) {
     ctx.message = e;
   }
@@ -54,6 +60,10 @@ db.updateTodo = async (ctx) => {
       }, {
         returnOriginal: false
       })
+
+    if (!ctx.body) {
+      ctx.message = 'error';
+    }
   } catch (error) {
     ctx.message = e;
   }
@@ -63,6 +73,10 @@ db.del = async (ctx) => {
   try {
     const id = new ObjectId(ctx.params.id);
     ctx.body = await ctx.app.database.collection('todos').deleteOne({ _id: id })
+
+    if (!ctx.body.result.ok) {
+      ctx.message = e;
+    }
   } catch (error) {
     ctx.message = e;
   }
