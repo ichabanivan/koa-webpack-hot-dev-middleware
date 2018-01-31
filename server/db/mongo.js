@@ -3,7 +3,7 @@ const url = 'mongodb://localhost:27017/';
 
 module.exports = function (app) {
   return async function (ctx, next) {
-    MongoClient.connect(url, function (err, db) {
+    await MongoClient.connect(url, function (err, db) {
       app.database = db.db('todos')
     })
 

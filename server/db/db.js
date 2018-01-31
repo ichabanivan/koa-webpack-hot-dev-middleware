@@ -15,9 +15,9 @@ db.signup = async (ctx) => {
 
   let token = jwt.sign(user, privateKey, {});
 
-  let isNull = await ctx.app.database.collection('users').findOne({ username: request.username })
+  let userData = await ctx.app.database.collection('users').findOne({ username: request.username })
 
-  if (!isNull) {
+  if (!userData) {
     let result = await ctx.app.database.collection('users').insertOne({
       token,
       privateKey,
@@ -34,7 +34,7 @@ db.signup = async (ctx) => {
       token: tokenForUser
     })
   } else {
-    ctx.message = 'error';
+    ctx.message = 'Username repeat';
   }
 }
 
