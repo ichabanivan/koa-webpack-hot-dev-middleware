@@ -1,8 +1,12 @@
 const MongoClient = require('mongodb').MongoClient;
-const url = 'mongodb://localhost:27017/todos';
+const url = 'mongodb://localhost:27017/';
 
 module.exports = function (app) {
-  MongoClient.connect(url, function (err, db) {
-    app.database = db
-  })
+  return async function (ctx, next) {
+    MongoClient.connect(url, function (err, db) {
+      app.database = db.db('todos')
+    })
+
+    await next()
+  };  
 };
