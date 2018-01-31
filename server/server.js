@@ -6,7 +6,7 @@ const path = require('path');
 
 const middleware = require('./webpack-middleware/');
 const db = require('./db/mongo')
-const routes = require('./routes/');
+const router = require('./routes/');
 
 const app = new Koa();
 db(app);
@@ -15,8 +15,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(middleware())
 app.use(koaBody())
-
-routes(app);
+app.use(router.routes());
 
 app.listen(PORT, function() {
   console.log(`Listening on ${PORT}`);
