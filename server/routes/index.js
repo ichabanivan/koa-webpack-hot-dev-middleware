@@ -10,7 +10,8 @@ function routes(app) {
   const router = new Router();
 
   router
-    .post('/signup', db.signup)
+    .post('/signUp', db.signup)
+    .post('/signIn', db.signin)
     .get('/listTodos', db.listTodos)
     .post('/addTodo', db.addTodo)
     .put('/updateTodo', db.updateTodo)

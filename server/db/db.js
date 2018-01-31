@@ -4,37 +4,60 @@ const uuidV4 = require('uuid/v4');
 
 let db = {};
 
+db.signin = async (ctx) => {
+  let request = JSON.parse(ctx.request.body)
+
+  let user = await ctx.app.database.collection('users').findOne({ username: request.username, password: request.password })
+
+  let tokenForUser = jwt.sign({
+    username: user.username
+  }, user.privateKey)
+
+  ctx.body = JSON.stringify({
+    _id: user._id,
+    token: tokenForUser
+  })
+}
+
 db.signup = async (ctx) => {
   let privateKey = uuidV4();
   let request = JSON.parse(ctx.request.body)
 
   let user = {
-    username: request.name,
+    username: request.username,
     password: request.password
   }
 
-  let token = jwt.sign(user, privateKey);
+  let token = jwt.sign(user, privateKey, {});
 
-  let result = await ctx.app.database.collection('users').insertOne({
-    token,
-    privateKey
-  })
+  let isNull = await ctx.app.database.collection('users').findOne({ username: request.username })
+  
+  if (!isNull) {
+    let result = await ctx.app.database.collection('users').insertOne({
+      token,
+      privateKey,
+      username: request.username,
+      password: request.password
+    })
 
-  let tokenForUser = jwt.sign({
-    username: request.name
-  }, privateKey)
+    let tokenForUser = jwt.sign({
+      username: request.name
+    }, privateKey)
 
-  ctx.body = JSON.stringify({
-    _id: result.ops[0]._id,
-    token: tokenForUser
-  })
+    ctx.body = JSON.stringify({
+      _id: result.ops[0]._id,
+      token: tokenForUser
+    })
+  } else {
+    ctx.message = 'error';
+  }
 }
 
 db.listTodos = async (ctx) => {
   let { token, _id } = ctx.request.header;
   let id = new ObjectId(_id);
 
-  user = await ctx.app.database.collection('users').findOne({ _id: id })
+  let user = await ctx.app.database.collection('users').findOne({ _id: id })
 
   await jwt.verify(token, user.privateKey, async (err, decoded) => {
     if (err) {
@@ -51,55 +74,76 @@ db.listTodos = async (ctx) => {
 }
 
 db.addTodo = async (ctx) => {
-  try {
-    let date = new Date().toLocaleDateString();
+  let { token, _id } = ctx.request.header;
+  let id = new ObjectId(_id);
 
-    let todo = JSON.parse(ctx.request.body);
-    let result;
-
-    if (todo.body && todo.status) {
-      todo.created = date;
-      todo.modified = date;
-
-      let insertOne = await ctx.app.database.collection('todos').insertOne(todo)
-      result = insertOne.ops[0]
+  let user = await ctx.app.database.collection('users').findOne({ _id: id })
+  
+  await jwt.verify(token, user.privateKey, async (err, decoded) => {
+    if (err) {
+      ctx.message = 'error /listTodos';
     } else {
-      ctx.message = 'error';
-    }
+      try {
+        let date = new Date().toLocaleDateString();
 
-    if (result.body && result.status) {
-      ctx.body = result
-    } else {
-      ctx.message = 'error';
+        let todo = await JSON.parse(ctx.request.body);
+        let result;
+
+        if (todo.body && todo.status) {
+          todo.created = date;
+          todo.modified = date;
+
+          let insertOne = await ctx.app.database.collection('todos').insertOne(todo)
+          result = insertOne.ops[0]
+        } else {
+          ctx.message = 'error';
+        }
+
+        if (result.body && result.status) {
+          ctx.body = result
+        } else {
+          ctx.message = 'error';
+        }
+      } catch (error) {
+        ctx.message = error;
+      }
     }
-  } catch (e) {
-    ctx.message = e;
-  }
+  })
 }
 
 db.updateTodo = async (ctx) => {
-  try {
-    let date = new Date().toLocaleDateString();
-    let todo = JSON.parse(ctx.request.body);
-    let id = new ObjectId(todo._id);
+  let { token, _id } = ctx.request.header;
+  let id = new ObjectId(_id);
 
-    ctx.body = await ctx.app.database.collection('todos')
-      .findOneAndUpdate({ _id: id }, {
-        $set: {
-          modified: date,
-          body: todo.body,
-          status: todo.status
+  let user = await ctx.app.database.collection('users').findOne({ _id: id })
+
+  await jwt.verify(token, user.privateKey, async (err, decoded) => {
+    if (err) {
+      ctx.message = 'error /listTodos';
+    } else {
+      try {
+        let date = new Date().toLocaleDateString();
+        let todo = JSON.parse(ctx.request.body);
+        let id = new ObjectId(todo._id);
+
+        ctx.body = await ctx.app.database.collection('todos').findOneAndUpdate({ _id: id }, {
+          $set: {
+            modified: date,
+            body: todo.body,
+            status: todo.status
+          }
+        }, {
+          returnOriginal: false
+        })
+
+        if (!ctx.body) {
+          ctx.message = 'error';
         }
-      }, {
-        returnOriginal: false
-      })
-
-    if (!ctx.body) {
-      ctx.message = 'error';
+      } catch (error) {
+        ctx.message = e;
+      }
     }
-  } catch (error) {
-    ctx.message = e;
-  }
+  })
 }
 
 db.del = async (ctx) => {
