@@ -11,10 +11,10 @@ const router = new Router();
 router
   .post('/signUp', db.signup)
   .post('/signIn', db.signin)
-  .get('/listTodos', db.listTodos)
   .post('/addTodo', db.addTodo)
   .put('/updateTodo', db.updateTodo)
   .del('/:id', db.del)
+  .get('/listTodos', db.listTodos)
   .get("*", async (ctx, next) => {
     ctx.set('Content-Type', 'text/html');
     ctx.body = fs.readFileSync(path.resolve(__dirname, '../../src/index.html'));
