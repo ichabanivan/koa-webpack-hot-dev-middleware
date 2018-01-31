@@ -31,7 +31,7 @@ db.signup = async (ctx) => {
   let token = jwt.sign(user, privateKey, {});
 
   let isNull = await ctx.app.database.collection('users').findOne({ username: request.username })
-  
+
   if (!isNull) {
     let result = await ctx.app.database.collection('users').insertOne({
       token,
@@ -78,7 +78,7 @@ db.addTodo = async (ctx) => {
   let id = new ObjectId(_id);
 
   let user = await ctx.app.database.collection('users').findOne({ _id: id })
-  
+
   await jwt.verify(token, user.privateKey, async (err, decoded) => {
     if (err) {
       ctx.message = 'error /listTodos';
@@ -133,8 +133,8 @@ db.updateTodo = async (ctx) => {
             status: todo.status
           }
         }, {
-          returnOriginal: false
-        })
+            returnOriginal: false
+          })
 
         if (!ctx.body) {
           ctx.message = 'error';
