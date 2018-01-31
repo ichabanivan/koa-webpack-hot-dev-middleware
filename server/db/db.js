@@ -1,20 +1,53 @@
 const ObjectId = require('mongodb').ObjectID;
+const jwt = require('jsonwebtoken');
+const uuidV4 = require('uuid/v4');
 
 let db = {};
 
-db.listTodos = async (ctx) => {
-  try {
-    ctx.body = await ctx.app.database.collection('todos').find().toArray()
-    ctx.status = 200;
+db.signup = async (ctx) => {
+  let privateKey = uuidV4();
+  let request = JSON.parse(ctx.request.body)
 
-    if (ctx.body) {
-      ctx.status = 200;
-    } else {
-      ctx.message = 'error';
-    }
-  } catch (e) {
-    ctx.message = e;
+  let user = {
+    username: request.name,
+    password: request.password
   }
+
+  let token = jwt.sign(user, privateKey);
+
+  let result = await ctx.app.database.collection('users').insertOne({
+    token,
+    privateKey
+  })
+
+  let tokenForUser = jwt.sign({
+    username: request.name
+  }, privateKey)
+
+  ctx.body = JSON.stringify({
+    _id: result.ops[0]._id,
+    token: tokenForUser
+  })
+}
+
+db.listTodos = async (ctx) => {
+  let { token, _id } = ctx.request.header;
+  let id = new ObjectId(_id);
+
+  user = await ctx.app.database.collection('users').findOne({ _id: id })
+
+  await jwt.verify(token, user.privateKey, async (err, decoded) => {
+    if (err) {
+      ctx.message = 'error /listTodos';
+    } else {
+      try {
+        let response = await ctx.app.database.collection('todos').find({}).toArray()
+        ctx.body = JSON.stringify(response)
+      } catch (error) {
+        ctx.message = 'error /listTodos';
+      }
+    }
+  });
 }
 
 db.addTodo = async (ctx) => {
