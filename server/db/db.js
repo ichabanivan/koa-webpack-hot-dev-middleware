@@ -81,7 +81,7 @@ db.addTodo = async (ctx) => {
 
   await jwt.verify(token, user.privateKey, async (err, decoded) => {
     if (err) {
-      ctx.message = 'error /listTodos';
+      ctx.message = 'error /addTodo';
     } else {
       try {
         let date = new Date().toLocaleDateString();
@@ -119,7 +119,7 @@ db.updateTodo = async (ctx) => {
 
   await jwt.verify(token, user.privateKey, async (err, decoded) => {
     if (err) {
-      ctx.message = 'error /listTodos';
+      ctx.message = 'error /updateTodo';
     } else {
       try {
         let date = new Date().toLocaleDateString();
@@ -147,16 +147,27 @@ db.updateTodo = async (ctx) => {
 }
 
 db.del = async (ctx) => {
-  try {
-    const id = new ObjectId(ctx.params.id);
-    ctx.body = await ctx.app.database.collection('todos').deleteOne({ _id: id })
+  let { token, _id } = ctx.request.header;
+  let id = new ObjectId(_id);
 
-    if (!ctx.body.result.ok) {
-      ctx.message = e;
+  let user = await ctx.app.database.collection('users').findOne({ _id: id })
+
+  await jwt.verify(token, user.privateKey, async (err, decoded) => {
+    if (err) {
+      ctx.message = 'error /del';
+    } else {
+      try {
+        const id = new ObjectId(ctx.params.id);
+        ctx.body = await ctx.app.database.collection('todos').deleteOne({ _id: id })
+        console.log(id, ctx.body);
+        if (!ctx.body.result.ok) {
+          ctx.message = e;
+        }
+      } catch (error) {
+        ctx.message = e;
+      }
     }
-  } catch (error) {
-    ctx.message = e;
-  }
+  })
 };
 
 module.exports = db
