@@ -4,21 +4,6 @@ const uuidV4 = require('uuid/v4');
 
 let db = {};
 
-db.signin = async (ctx) => {
-  let request = JSON.parse(ctx.request.body)
-
-  let user = await ctx.app.database.collection('users').findOne({ username: request.username, password: request.password })
-
-  let tokenForUser = jwt.sign({
-    username: user.username
-  }, user.privateKey)
-
-  ctx.body = JSON.stringify({
-    _id: user._id,
-    token: tokenForUser
-  })
-}
-
 db.signup = async (ctx) => {
   let privateKey = uuidV4();
   let request = JSON.parse(ctx.request.body)
@@ -50,6 +35,25 @@ db.signup = async (ctx) => {
     })
   } else {
     ctx.message = 'error';
+  }
+}
+
+db.signin = async (ctx) => {
+  let request = JSON.parse(ctx.request.body)
+
+  let user = await ctx.app.database.collection('users').findOne({ username: request.username, password: request.password })
+
+  if (user) {
+    let tokenForUser = jwt.sign({
+      username: user.username
+    }, user.privateKey)
+
+    ctx.body = JSON.stringify({
+      _id: user._id,
+      token: tokenForUser
+    })
+  } else {
+    ctx.message = 'error /listTodos';
   }
 }
 
