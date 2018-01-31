@@ -53,7 +53,7 @@ db.signin = async (ctx) => {
       token: tokenForUser
     })
   } else {
-    ctx.message = 'error /listTodos';
+    ctx.message = 'error /signin';
   }
 }
 
