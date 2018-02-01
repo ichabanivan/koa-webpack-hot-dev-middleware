@@ -1,35 +1,42 @@
-let db = {};
+import { MongoClient } from 'mongodb';
+import config from '../config';
 
-db.findOneUser = async (ctx, user) => {
-  return await ctx.app.database.collection('users').findOne(user)
+let database = {};
+
+MongoClient.connect(config.url, function (err, db) {
+  database = db.db('todos')
+})
+
+database.findOneUser = async (ctx, user) => {
+  return await database.collection('users').findOne(user)
 }
 
-db.addUser = async (ctx, user) => {
-  return await ctx.app.database.collection('users').insertOne(user)
+database.addUser = async (ctx, user) => {
+  return await database.collection('users').insertOne(user)
 }
 
-db.findAllTodos = async (ctx) => {
-  return await ctx.app.database.collection('todos').find({}).toArray()
+database.findAllTodos = async (ctx) => {
+  return await database.collection('todos').find({}).toArray()
 }
 
-db.findOneTodo = async (ctx, todo) => {
-  return await ctx.app.database.collection('todos').findOne(todo)
+database.findOneTodo = async (ctx, todo) => {
+  return await database.collection('todos').findOne(todo)
 }
 
-db.addTodo = async (ctx, todo) => {
-  return await ctx.app.database.collection('todos').insertOne(todo)
+database.addTodo = async (ctx, todo) => {
+  return await database.collection('todos').insertOne(todo)
 }
 
-db.findAndUpdateTodo = async (ctx, id, todo) => {
-  return await ctx.app.database.collection('todos').findOneAndUpdate({ _id: id }, {
+database.findAndUpdateTodo = async (ctx, id, todo) => {
+  return await database.collection('todos').findOneAndUpdate({ _id: id }, {
     $set: todo
   }, {
     returnOriginal: false
   })
 }
 
-db.deleteTodo = async (ctx, id) => {
-  return await ctx.app.database.collection('todos').deleteOne({ _id: id })
+database.deleteTodo = async (ctx, id) => {
+  return await database.collection('todos').deleteOne({ _id: id })
 }
 
-module.exports = db
+export default database;
