@@ -1,11 +1,10 @@
 const ObjectId = require('mongodb').ObjectID;
 const jwt = require('jsonwebtoken');
-const uuidV4 = require('uuid/v4');
+const config = require('../config')
 
 let db = {};
 
 db.signup = async (ctx) => {
-  let privateKey = uuidV4();
   let request = JSON.parse(ctx.request.body)
 
   let user = {
@@ -13,28 +12,29 @@ db.signup = async (ctx) => {
     password: request.password
   }
 
-  let token = jwt.sign(user, privateKey, {});
-
+  let token = jwt.sign(user, config.privateKey, {});
   let userData = await ctx.app.database.collection('users').findOne({ username: request.username })
 
+  // if user don't exist, create new user
   if (!userData) {
     let result = await ctx.app.database.collection('users').insertOne({
-      token,
-      privateKey,
       username: request.username,
       password: request.password
     })
 
     let tokenForUser = jwt.sign({
       username: request.name
-    }, privateKey)
+    }, config.privateKey)
 
     ctx.body = JSON.stringify({
       _id: result.ops[0]._id,
+      username: result.ops[0].username,
       token: tokenForUser
     })
+
+    console.log(ctx.body);
   } else {
-    ctx.message = 'Username repeat';
+    ctx.message = 'User exist';
   }
 }
 
@@ -46,7 +46,7 @@ db.signin = async (ctx) => {
   if (user) {
     let tokenForUser = jwt.sign({
       username: user.username
-    }, user.privateKey)
+    }, config.privateKey)
 
     ctx.body = JSON.stringify({
       _id: user._id,
@@ -62,16 +62,16 @@ db.listTodos = async (ctx) => {
   let id = new ObjectId(_id);
 
   let user = await ctx.app.database.collection('users').findOne({ _id: id })
-
-  await jwt.verify(token, user.privateKey, async (err, decoded) => {
+  await jwt.verify(token, config.privateKey, async (err) => {
     if (err) {
-      ctx.message = 'error /listTodos';
+      ctx.message = "Error(listTodos) - can’t verify user data";
+      console.log("Error(listTodos) - can’t verify user data");
     } else {
       try {
         let response = await ctx.app.database.collection('todos').find({}).toArray()
         ctx.body = JSON.stringify(response)
       } catch (error) {
-        ctx.message = 'error /listTodos';
+        ctx.message = error;
       }
     }
   });
@@ -83,7 +83,7 @@ db.addTodo = async (ctx) => {
 
   let user = await ctx.app.database.collection('users').findOne({ _id: id })
 
-  await jwt.verify(token, user.privateKey, async (err, decoded) => {
+  await jwt.verify(token, config.privateKey, async (err, decoded) => {
     if (err) {
       ctx.message = 'error /addTodo';
     } else {
@@ -121,7 +121,7 @@ db.updateTodo = async (ctx) => {
 
   let user = await ctx.app.database.collection('users').findOne({ _id: id })
 
-  await jwt.verify(token, user.privateKey, async (err, decoded) => {
+  await jwt.verify(token, config.privateKey, async (err, decoded) => {
     if (err) {
       ctx.message = 'error /updateTodo';
     } else {
@@ -156,7 +156,7 @@ db.del = async (ctx) => {
 
   let user = await ctx.app.database.collection('users').findOne({ _id: id })
 
-  await jwt.verify(token, user.privateKey, async (err, decoded) => {
+  await jwt.verify(token, config.privateKey, async (err, decoded) => {
     if (err) {
       ctx.message = 'error /del';
     } else {
