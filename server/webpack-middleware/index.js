@@ -32,7 +32,7 @@ function koaDevMiddleware(dev, compiler) {
   ]);
 }
 
-module.exports = function middleware() {
+export default function middleware() {
   const compiler = webpack(webpackConfig);
   const options = {
     dev: {

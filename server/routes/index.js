@@ -18,4 +18,4 @@ router
     ctx.body = fs.readFileSync(path.resolve(__dirname, '../../src/index.html'));
   })
 
-module.exports = router
+export default router

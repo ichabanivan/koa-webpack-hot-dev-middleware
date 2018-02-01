@@ -32,7 +32,7 @@ routes.signup = async (ctx) => {
     username: request.username,
     password: request.password
   }
-  let token = jwt.sign(user, config.privateKey, {});
+  let token = jwt.sign(user, config.privateKey, { expiresIn: '10h' });
 
   let userData = await db.findOneUser({ username: request.username })
 
@@ -151,4 +151,4 @@ routes.del = async (ctx) => {
   }  
 };
 
-module.exports = routes
+export default routes
