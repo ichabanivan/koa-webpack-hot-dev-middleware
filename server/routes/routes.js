@@ -1,9 +1,10 @@
 const ObjectId = require('mongodb').ObjectID;
 const jwt = require('jsonwebtoken');
+
 const config = require('../config')
+const db = require('../db/db');
 
 let routes = {};
-const db = require('../db/db');
 
 routes.signup = async (ctx) => {
   let request = JSON.parse(ctx.request.body)
@@ -58,124 +59,148 @@ routes.signin = async (ctx) => {
 
 routes.listTodos = async (ctx) => {
   let { authorization, _id } = ctx.request.header;
-  let id = new ObjectId(_id);
-  let token = authorization.split(' ')[1];
 
-  let user = await db.findOneUser(ctx, { _id: id })
+  if (authorization) {
+    let id = new ObjectId(_id);
+    let token = authorization.split(' ')[1];
 
-  await jwt.verify(token, config.privateKey, async (err) => {
-    if (err) {
-      ctx.message = "Error(listTodos) - cannot verify user data";
-      console.log("Error(listTodos) - cannot verify user data");
-    } else {
-      try {
-        let response = await db.findAllTodos(ctx)
-        ctx.body = JSON.stringify(response)
-      } catch (error) {
-        ctx.message = error;
+    let user = await db.findOneUser(ctx, { _id: id })
+
+    await jwt.verify(token, config.privateKey, async (err) => {
+      if (err) {
+        ctx.message = "Error(listTodos) - cannot verify user data";
+        console.log("Error(listTodos) - cannot verify user data");
+      } else {
+        try {
+          let response = await db.findAllTodos(ctx)
+          ctx.body = JSON.stringify(response)
+        } catch (error) {
+          ctx.message = error;
+        }
       }
-    }
-  });
+    });
+  } else {
+    ctx.message = 'User does not have a token';
+    console.log('User does not have a token');
+  }
 }
 
 routes.addTodo = async (ctx) => {
   let { authorization, _id } = ctx.request.header;
-  let id = new ObjectId(_id);
-  let token = authorization.split(' ')[1];
 
-  let user = await db.findOneUser(ctx, { _id: id })
+  if (authorization) {
+    let id = new ObjectId(_id);
+    let token = authorization.split(' ')[1];
 
-  await jwt.verify(token, config.privateKey, async (err) => {
-    if (err) {
-      ctx.message = 'Error(addTodo) - cannot verify user data';
-    } else {
-      try {
-        let date = new Date().toLocaleDateString();
+    let user = await db.findOneUser(ctx, { _id: id })
 
-        let todo = await JSON.parse(ctx.request.body);
-        let result;
+    await jwt.verify(token, config.privateKey, async (err) => {
+      if (err) {
+        ctx.message = 'Error(addTodo) - cannot verify user data';
+      } else {
+        try {
+          let date = new Date().toLocaleDateString();
 
-        let todoFromDB = await db.findOneTodo(ctx, { body: todo.body })
+          let todo = await JSON.parse(ctx.request.body);
+          let result;
 
-        if (todoFromDB) {
-          console.log('You have same todo')
-          ctx.message = 'You have same todo';
-        } else if (todo.body && todo.status) {
-          todo.created = date;
-          todo.modified = date;
+          let todoFromDB = await db.findOneTodo(ctx, { body: todo.body })
 
-          try {
-            let insertOne = await db.addTodo(ctx, todo)
-            result = insertOne.ops[0]
-            ctx.body = result
-          } catch (error) {
-            console.log(error);
+          if (todoFromDB) {
+            console.log('You have same todo')
+            ctx.message = 'You have same todo';
+          } else if (todo.body && todo.status) {
+            todo.created = date;
+            todo.modified = date;
+
+            try {
+              let insertOne = await db.addTodo(ctx, todo)
+              result = insertOne.ops[0]
+              ctx.body = result
+            } catch (error) {
+              console.log(error);
+            }
+
+          } else {
+            ctx.message = 'Body or status is empty in request';
           }
-
-        } else {
-          ctx.message = 'Body or status is empty in request';
+        } catch (error) {
+          ctx.message = error;
         }
-      } catch (error) {
-        ctx.message = error;
       }
-    }
-  })
+    })
+  } else {
+    ctx.message = 'User does not have a token';
+    console.log('User does not have a token');
+  }
 }
 
 routes.updateTodo = async (ctx) => {
   let { authorization, _id } = ctx.request.header;
-  let id = new ObjectId(_id);
-  let token = authorization.split(' ')[1];
 
-  let user = await db.findOneUser(ctx, { _id: id })
+  if (authorization) {
+    let id = new ObjectId(_id);
+    let token = authorization.split(' ')[1];
 
-  await jwt.verify(token, config.privateKey, async (err) => {
-    if (err) {
-      ctx.message = 'Error(updateTodo) - cannot verify user data';
-    } else {
-      try {
-        let date = new Date().toLocaleDateString();
-        let todo = JSON.parse(ctx.request.body);
-        let id = new ObjectId(todo._id);
+    let user = await db.findOneUser(ctx, { _id: id })
 
-        ctx.body = await db.findAndUpdateTodo(ctx, id, {
-          modified: date,
-          body: todo.body,
-          status: todo.status
-        })
+    await jwt.verify(token, config.privateKey, async (err) => {
+      if (err) {
+        ctx.message = 'Error(updateTodo) - cannot verify user data';
+      } else {
+        try {
+          let date = new Date().toLocaleDateString();
+          let todo = JSON.parse(ctx.request.body);
+          let id = new ObjectId(todo._id);
 
-        if (!ctx.body) {
-          ctx.message = 'error';
+          ctx.body = await db.findAndUpdateTodo(ctx, id, {
+            modified: date,
+            body: todo.body,
+            status: todo.status
+          })
+
+          if (!ctx.body) {
+            ctx.message = 'error';
+          }
+        } catch (error) {
+          ctx.message = e;
         }
-      } catch (error) {
-        ctx.message = e;
       }
-    }
-  })
+    })
+  } else {
+    ctx.message = 'User does not have a token';
+    console.log('User does not have a token');
+  }
 }
 
 routes.del = async (ctx) => {
   let { authorization, _id } = ctx.request.header;
-  let id = new ObjectId(_id);
-  let token = authorization.split(' ')[1];
 
-  let user = await db.findOneUser(ctx, { _id: id })
+  if (authorization) {
+    let id = new ObjectId(_id);
+    let token = authorization.split(' ')[1];
 
-  await jwt.verify(token, config.privateKey, async (err) => {
-    if (err) {
-      ctx.message = 'Error(del) - cannot verify user data';
-    } else {
-      try {
-        const id = new ObjectId(ctx.params.id);
-        ctx.body = await db.deleteTodo(ctx, id)
-        if (!ctx.body.result.ok) {
+    let user = await db.findOneUser(ctx, { _id: id })
+
+    await jwt.verify(token, config.privateKey, async (err) => {
+      if (err) {
+        ctx.message = 'Error(del) - cannot verify user data';
+      } else {
+        try {
+          const id = new ObjectId(ctx.params.id);
+          ctx.body = await db.deleteTodo(ctx, id)
+          if (!ctx.body.result.ok) {
+            ctx.message = e;
+          }
+        } catch (error) {
           ctx.message = e;
         }
-      } catch (error) {
-        ctx.message = e;
       }
-    }
-  })
+    })
+  } else {
+    ctx.message = 'User does not have a token';
+    console.log('User does not have a token');
+  }
 };
 
 module.exports = routes
