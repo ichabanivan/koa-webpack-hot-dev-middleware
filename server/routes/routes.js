@@ -17,8 +17,8 @@ routes.verify = async (ctx, next) => {
       jwt.verify(token, config.privateKey)
       await next()
     } catch (error) {
-      ctx.message = "Error(listTodos) - cannot verify user data";
-      console.log("Error(listTodos) - cannot verify user data");
+      ctx.message = "Error - cannot verify user data";
+      console.log("Error - cannot verify user data");
     }
   } else {
     ctx.message = 'User does not have a token';
@@ -34,11 +34,11 @@ routes.signup = async (ctx) => {
   }
   let token = jwt.sign(user, config.privateKey, {});
 
-  let userData = await db.findOneUser(ctx, { username: request.username })
+  let userData = await db.findOneUser({ username: request.username })
 
   // if user don't exist, create new user
   if (!userData) {
-    let result = await db.addUser(ctx, {
+    let result = await db.addUser({
       username: request.username,
       password: request.password
     })
@@ -60,7 +60,7 @@ routes.signup = async (ctx) => {
 routes.signin = async (ctx) => {
   let request = JSON.parse(ctx.request.body)
 
-  let user = await db.findOneUser(ctx, { username: request.username, password: request.password })
+  let user = await db.findOneUser({ username: request.username, password: request.password })
 
   if (user) {
     let tokenForUser = jwt.sign({
@@ -79,7 +79,7 @@ routes.signin = async (ctx) => {
 
 routes.listTodos = async (ctx) => {
   try {
-    let response = await db.findAllTodos(ctx)
+    let response = await db.findAllTodos()
     ctx.body = JSON.stringify(response)
   } catch (error) {
     ctx.message = error;
@@ -94,7 +94,7 @@ routes.addTodo = async (ctx) => {
     let todo = await JSON.parse(ctx.request.body);
     let result;
 
-    let todoFromDB = await db.findOneTodo(ctx, { body: todo.body })
+    let todoFromDB = await db.findOneTodo({ body: todo.body })
 
     if (todoFromDB) {
       console.log('You have same todo')
@@ -104,7 +104,7 @@ routes.addTodo = async (ctx) => {
       todo.modified = date;
 
       try {
-        let insertOne = await db.addTodo(ctx, todo)
+        let insertOne = await db.addTodo(todo)
         result = insertOne.ops[0]
         ctx.body = result
       } catch (error) {
@@ -125,7 +125,7 @@ routes.updateTodo = async (ctx) => {
     let todo = JSON.parse(ctx.request.body);
     let id = new ObjectId(todo._id);
 
-    ctx.body = await db.findAndUpdateTodo(ctx, id, {
+    ctx.body = await db.findAndUpdateTodo(id, {
       modified: date,
       body: todo.body,
       status: todo.status
@@ -142,7 +142,7 @@ routes.updateTodo = async (ctx) => {
 routes.del = async (ctx) => {
   try {
     const id = new ObjectId(ctx.params.id);
-    ctx.body = await db.deleteTodo(ctx, id)
+    ctx.body = await db.deleteTodo(id)
     if (!ctx.body.result.ok) {
       ctx.message = e;
     }
