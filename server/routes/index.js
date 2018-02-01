@@ -1,20 +1,17 @@
-const Router = require('koa-router');
 const fs = require('fs');
-const path = require('path');
-const jwt = require('jsonwebtoken');
-const ObjectId = require('mongodb').ObjectID;
+const Router = require('koa-router');
 
-const db = require('../db/db');
+const routes = require('./routes');
 
 const router = new Router();
 
 router
-  .post('/signUp', db.signup)
-  .post('/signIn', db.signin)
-  .post('/addTodo', db.addTodo)
-  .put('/updateTodo', db.updateTodo)
-  .del('/:id', db.del)
-  .get('/listTodos', db.listTodos)
+  .post('/signUp', routes.signup)
+  .post('/signIn', routes.signin)
+  .post('/addTodo', routes.addTodo)
+  .put('/updateTodo', routes.updateTodo)
+  .del('/:id', routes.del)
+  .get('/listTodos', routes.listTodos)
   .get("*", async (ctx, next) => {
     ctx.set('Content-Type', 'text/html');
     ctx.body = fs.readFileSync(path.resolve(__dirname, '../../src/index.html'));
