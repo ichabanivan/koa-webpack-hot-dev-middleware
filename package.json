@@ -2,6 +2,7 @@
   "name": "koa-webpack-dev-hot-middleware",
   "version": "1.0.0",
   "dependencies": {
+    "babel-runtime": "^6.26.0",
     "history": "^4.7.2",
     "jsonwebtoken": "^8.1.1",
     "koa": "^2.4.1",
@@ -20,15 +21,18 @@
     "webpack-hot-client": "^1.2.4"
   },
   "scripts": {
-    "start": "nodemon --watch server server/server.js"
+    "start": "nodemon --watch server index.js"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
+    "babel-plugin-transform-runtime": "^6.23.0",
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
+    "babel-register": "^6.26.0",
     "css-loader": "^0.28.9",
     "nodemon": "^1.14.11",
     "react-hot-loader": "^3.1.3",

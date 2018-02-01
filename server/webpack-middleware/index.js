@@ -1,8 +1,8 @@
-const webpackDevMiddleware = require('webpack-dev-middleware');
-const webpackHotMiddleware = require('webpack-hot-client');
+import webpackDevMiddleware from 'webpack-dev-middleware';
+import webpackHotMiddleware from 'webpack-hot-client';
 
-const webpack = require('webpack');
-const webpackConfig = require('../../webpack.config');
+import webpack from 'webpack';
+import webpackConfig from '../../webpack.config';
 
 function koaDevMiddleware(dev, compiler) {
   function waitMiddleware() {

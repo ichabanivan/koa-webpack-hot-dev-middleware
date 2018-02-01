@@ -1,16 +1,15 @@
-const Koa = require('koa');
-const koaBody = require('koa-body');
-const fs = require('fs');
-const Router = require('koa-router');
-const path = require('path');
-const MongoClient = require('mongodb').MongoClient;
-const config = require('./config')
+import Koa from 'koa'
+import koaBody from 'koa-body';
+import fs from 'fs';
+import Router from 'koa-router';
+import path from 'path';
+import { MongoClient } from 'mongodb';
+import config from './config';
 
-const middleware = require('./webpack-middleware/');
-const router = require('./routes/');
+import middleware from './webpack-middleware/';
+import router from './routes/';
 
 const app = new Koa();
-
 const PORT = process.env.PORT || 3000;
 
 MongoClient.connect(config.url, function (err, db) {

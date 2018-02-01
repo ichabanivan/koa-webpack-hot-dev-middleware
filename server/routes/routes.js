@@ -1,8 +1,8 @@
-const ObjectId = require('mongodb').ObjectID;
-const jwt = require('jsonwebtoken');
+import { ObjectId } from 'mongodb';
+import jwt from 'jsonwebtoken';
 
-const config = require('../config')
-const db = require('../db/db');
+import config from '../config';
+import db from '../db/db';
 
 let routes = {};
 
