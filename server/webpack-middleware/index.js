@@ -4,29 +4,25 @@ import webpackHotMiddleware from 'webpack-hot-client';
 import webpack from 'webpack';
 import webpackConfig from '../../webpack.config';
 
-function koaDevMiddleware(dev, compiler) {
-  function waitMiddleware() {
-    return new Promise((resolve, reject) => {
-      dev.waitUntilValid(() => {
+function koaDevMiddleware(devMiddleware, compiler) {
+  return (ctx, next) => Promise.all([
+    new Promise((resolve, reject) => {
+      devMiddleware.waitUntilValid(() => {
         resolve(true);
       });
 
       compiler.plugin('failed', (error) => {
         reject(error);
       });
-    });
-  }
-
-  return (context, next) => Promise.all([
-    waitMiddleware(),
+    }),
     new Promise((resolve) => {
-      dev(context.req, {
+      devMiddleware(ctx.req, {
         end: (content) => {
-          context.body = content;
+          ctx.body = content;
           resolve();
         },
-        setHeader: context.set.bind(context),
-        locals: context.state
+        setHeader: ctx.set.bind(ctx),
+        locals: ctx.state
       }, () => resolve(next()));
     })
   ]);
@@ -41,15 +37,15 @@ export default function middleware() {
     hot: {}
   };
 
-  const client = webpackHotMiddleware(compiler, options.hot);
-  const dev = webpackDevMiddleware(compiler, options.dev);
+  const hotMiddleware = webpackHotMiddleware(compiler, options.hot);
+  const devMiddleware = webpackDevMiddleware(compiler, options.dev);
 
-  return Object.assign(koaDevMiddleware(dev, compiler), {
-    dev,
-    client,
+  return Object.assign(koaDevMiddleware(devMiddleware, compiler), {
+    devMiddleware,
+    hotMiddleware,
     close(callback) {
-      dev.close(() => {
-        client.close(callback);
+      devMiddleware.close(() => {
+        hotMiddleware.close(callback);
       });
     }
   });
