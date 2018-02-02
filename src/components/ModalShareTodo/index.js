@@ -14,7 +14,7 @@ class ModalShareTodo extends Component {
   agree = (e) => {
     e.preventDefault();
     const _id = this.props._id;
-
+    console.log(_id)
     this.props.hideModalAndShareTodo(_id, this.state.username);
   };
 

@@ -9,15 +9,17 @@ export const newText = (text) => ({
 
 export const shareTodo = (_id, shareUsername) => {
   return async (dispatch, getState) => {
+    let state = getState();
     console.log("shareTodo");
-    let todo = { _id, shareUsername };
+    let todo = { _id, username: shareUsername, canEdit: '' };
+    console.log(todo)
     try {
       let response = await fetch('/app/shareTodo', {
         method: 'PUT',
         body: JSON.stringify(todo),
         headers: new Headers({
           'authorization': `Bearer ${state.user.authorization}`,
-          '_id': state.user._id // -
+          _id
         })
       })
 
@@ -26,11 +28,11 @@ export const shareTodo = (_id, shareUsername) => {
       console.log(res)
 
       if (response.ok) {
-        dispatch({
-          type: ACTIONS.UPDATE_TODO,
-          todo: res.value
-        });
-        dispatch(push(`/app/`))
+        // dispatch({
+        //   type: ACTIONS.UPDATE_TODO,
+        //   todo: res.value
+        // });
+        // dispatch(push(`/app/`))
       } else {
         dispatch(push(`/app/${_id}/error`));
       }
@@ -98,10 +100,7 @@ export function addNewTodo(text) {
       }
     });
 
-    let todo = {
-      body: text,
-      status: 'new'
-    };
+    let todo = { body: text, status: "new", canEdit: state.user.username, owner: state.user.username };
 
     if (isUnic) {
       try {

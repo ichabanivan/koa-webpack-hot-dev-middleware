@@ -143,19 +143,16 @@ routes.updateTodo = async (ctx) => {
 }
 
 routes.shareTodo = async ctx => {
-  console.log("shareTodo");
   try {
-    let todo = JSON.parse(ctx.request.body);
-    let id = new ObjectId(todo._id);
+    let req = JSON.parse(ctx.request.body);
+    // let req = ctx.request.body;
+    // id заметки
+    let id = new ObjectId(req._id);
 
-    console.log(todo)
-    ctx.body = await db.share({ _id: id }, {$push: {share: todo.share}})
+    ctx.body = await db.share(id, req.username)
 
-    if (!ctx.body) {
-      ctx.message = "error";
-    }
   } catch (error) {
-    ctx.message = e;
+    ctx.message = error;
   }
 };
 

@@ -39,8 +39,14 @@ database.deleteTodo = async (id) => {
   return await database.mongo.collection('todos').deleteOne({ _id: id })
 }
 
-database.share = async (obj) => {
-  return await database.mongo.updateOne(obj)
-}
+database.share = async (id, user) => {
+  return await database.mongo.collection("todos").findOneAndUpdate({ _id: id }, {
+    $addToSet: {
+      share: user
+    }
+  }, {
+    returnOriginal: false
+  });
+};
 
 export default database;
