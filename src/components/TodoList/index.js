@@ -2,12 +2,18 @@ import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
 
+import { initTodos } from '../../actions/todo';
+
 import CONSTANTS from '../../constants';
 import TodoItem from '../TodoItem/';
 
 import './index.css';
 
 class TodoList extends Component {
+  componentDidMount() {
+    this.props.initTodos()
+  }
+  
   render() {
     const {
       todos,
@@ -51,4 +57,4 @@ const mapStateToProps = (state) => {
   }
 };
 
-export default connect(mapStateToProps, null)(TodoList)
+export default connect(mapStateToProps, { initTodos })(TodoList)

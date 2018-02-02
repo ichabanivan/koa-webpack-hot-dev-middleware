@@ -5,6 +5,7 @@ import todos from './todos';
 import filter from './filter';
 import modals from './modals';
 import inputText from './inputText';
+import user from './user';
 
 export default combineReducers({
   router: routerReducer,
@@ -12,4 +13,5 @@ export default combineReducers({
   modals,
   filter,
   inputText,
+  user
 });

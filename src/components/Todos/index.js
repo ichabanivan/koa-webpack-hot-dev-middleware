@@ -6,6 +6,7 @@ import { chooseModal } from '../../actions/modal';
 
 import Input from '../Input/';
 import TodoList from '../TodoList/';
+import Filters from '../Filters/';
 
 import ModalError from '../ModalError/';
 import ModalRemoveTodo from '../ModalRemoveTodo/';
@@ -57,7 +58,7 @@ class Todos extends Component {
       <div>
         <Input _id={id} />
         <TodoList _id={id} />
-
+        <Filters />
         <ModalError />
         <ModalRemoveTodo _id={id} />
         <ModalChangeStatus _id={id} />

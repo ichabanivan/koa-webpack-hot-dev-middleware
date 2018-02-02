@@ -3,30 +3,39 @@ import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import { initTodos } from '../actions/todo';
+import { push } from 'react-router-redux'
 
 import Todos from './Todos/';
-import Filters from './Filters/';
+import Register from './Register/';
+import Login from './Login/';
 
 import 'normalize.css';
 import './index.css';
 
 class App extends Component {
-  componentDidMount() {
-    this.props.initTodos()
+  componentDidMount = () => {
+    const { push, user } = this.props;
+    user ? push('/app') : push('/login')
   }
-
+  
   render() {
     return (
       <div className="todo">
 
         <h1>Todos</h1>
-        <Filters />
-        <Route path="/:id?/:modal?" component={ Todos } />
+        <Route path="/login" component={Login} />
+        <Route path="/reg" component={Register} />
+        <Route path="/app/:id?/:modal?" component={ Todos } />
 
       </div>
     );
   }
 }
 
-export default connect(null, { initTodos })(App)
+const mapStateToProps = (state) => {
+  return {
+    user: state.user 
+  }
+};
+
+export default connect(mapStateToProps, { push })(App)

@@ -59,7 +59,7 @@ export const hideModalAndChangeStatus = (_id, status) => {
   return (dispatch) => {
     dispatch(actionChangeStatus(_id, status));
     dispatch(hideModals());
-    dispatch(push(`/${_id}`));
+    dispatch(push(`/app/${_id}`));
   }
 };
 

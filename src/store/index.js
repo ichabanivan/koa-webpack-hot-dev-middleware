@@ -14,13 +14,14 @@ const middleware = [
   routerMiddleware(history)
 ];
 
-if (process.env.NODE_ENV === 'development') {
+// console.log(process.env.NODE_ENV)
+// if (process.env.NODE_ENV === 'development') {
   const devToolsExtension = window.devToolsExtension;
 
   if (typeof devToolsExtension === 'function') {
     enhancers.push(devToolsExtension())
   }
-}
+// }
 
 const composedEnhancers = compose(
   applyMiddleware(...middleware),

@@ -8,12 +8,17 @@ export const newText = (text) => ({
 });
 
 export const updateTodo = (todo, _id) => {
-  return async dispatch => {
+  return async (dispatch, getState) => {
+    let state = getState();
     if (todo.body) {
       try {
-        let response = await fetch('/updateTodo', {
+        let response = await fetch('/app/updateTodo', {
           method: 'PUT',
-          body: JSON.stringify(todo)
+          body: JSON.stringify(todo),
+          headers: new Headers({
+            'authorization': `Bearer ${state.user.authorization}`,
+            '_id': state.user._id
+          })
         })
 
         let res = await response.json();
@@ -23,16 +28,16 @@ export const updateTodo = (todo, _id) => {
             type: ACTIONS.UPDATE_TODO,
             todo: res.value
           });
-          dispatch(push(`/${_id}`))
+          dispatch(push(`app/${_id}`))
         } else {
-          dispatch(push(`/${_id}/error`));
+          dispatch(push(`app/${_id}/error`));
         }
       } catch (error) {
         console.error('/updateTodo - error')
-        dispatch(push(`/${_id}/error`));
+        dispatch(push(`app/${_id}/error`));
       }
     } else {
-      dispatch(push(`/${_id}/error`));
+      dispatch(push(`app/${_id}/error`));
     }
   }
 };
@@ -46,12 +51,12 @@ export function addNewTodo(text) {
 
     // if empty
     if (!text) {
-      dispatch(push(`/${ id }/error`));
+      dispatch(push(`app/${ id }/error`));
       return false
     }
 
     state.todos.forEach((todo) => {
-      if ( todo.body === text ) {
+      if (todo.body === text) {
         isUnic = false
       }
     });
@@ -63,9 +68,12 @@ export function addNewTodo(text) {
 
     if (isUnic) {
       try {
-        let response = await fetch('/addTodo', {
+        let response = await fetch('/app/addTodo', {
           method: 'POST',
-          body: JSON.stringify(todo)
+          body: JSON.stringify(todo),
+          headers: new Headers({
+            'authorization': `Bearer ${state.user.authorization}`
+          })
         })
         let res = await response.json()
         dispatch({
@@ -77,19 +85,24 @@ export function addNewTodo(text) {
         })
       } catch (error) {
         console.error('/addTodo - error')
-        dispatch(push(`/${id}/error`));
+        dispatch(push(`app/${id}/error`));
       }
     } else {
-      dispatch(push(`/${id}/error`));
+      dispatch(push(`app/${id}/error`));
     }
   };
 }
 
 export function actionRemoveTodo(_id) {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
+    let state = getState();
     try {
-      let response = await fetch(`/${_id}`, {
-        method: 'DELETE'
+      let response = await fetch(`/app/${_id}`, {
+        method: 'DELETE',
+        headers: new Headers({
+          'authorization': `Bearer ${state.user.authorization}`,
+          '_id': state.user._id
+        })
       })
       let res = await response.json()
 
@@ -103,11 +116,11 @@ export function actionRemoveTodo(_id) {
         });
         dispatch(push('/'));
       } else {
-        dispatch(push(`/${_id}/error`));
+        dispatch(push(`app/${_id}/error`));
       }
     } catch (error) {
       console.error('Response was not received')
-      dispatch(push(`/${_id}/error`));
+      dispatch(push(`app/${_id}/error`));
     }
   }
 }
@@ -119,9 +132,12 @@ export function actionChangeStatus(_id, status) {
     todo.status = status;
 
     try {
-      let response = await fetch('/updateTodo', {
+      let response = await fetch('/app/updateTodo', {
         method: 'PUT',
-        body: JSON.stringify(todo)
+        body: JSON.stringify(todo),
+        headers: new Headers({
+          'authorization': `Bearer ${state.user.authorization}`
+        })
       })
 
       let res = await response.json()
@@ -132,21 +148,25 @@ export function actionChangeStatus(_id, status) {
           todo: res.value
         });
       } else {
-        dispatch(push(`/${_id}/error`));
+        dispatch(push(`app/${_id}/error`));
       }
     } catch (error) {
-      dispatch(push(`/${_id}/error`));
+      dispatch(push(`app/${_id}/error`));
     }
   };
 }
 
 export function initTodos() {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
+    let state = getState();
     let id = Math.floor(Math.random() * 10000);
-
     try {
-      let response = await fetch('/listTodos', {
-        method: 'GET'
+      let response = await fetch('/app/listTodos', {
+        method: 'GET',
+        headers: new Headers({
+          'authorization': `Bearer ${state.user.authorization}`,
+          '_id': state.user._id
+        })
       });
 
       let todos = await response.json()
@@ -157,12 +177,12 @@ export function initTodos() {
           todos
         })
       } else {
-        dispatch(push(`/${id}/error`));
+        dispatch(push(`app/${id}/error`));
       }
       
     } catch (error) {
       console.error('/listTodos error')
-      dispatch(push(`/${id}/error`));
+      dispatch(push(`app/${id}/error`));
     }
   }
 }

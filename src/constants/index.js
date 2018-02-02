@@ -13,6 +13,7 @@ const HIDE_MODALS = 'HIDE_MODALS';
 const SET_PARAMS = 'SET_PARAMS';
 const RESET_TEXT = 'RESET_TEXT';
 const INIT_TODOS = 'INIT_TODOS';
+const USER = 'USER';
 
 export default {
   ADD_TODO,
@@ -29,5 +30,6 @@ export default {
   MODAL_REMOVE,
   SET_PARAMS,
   INIT_TODOS,
-  RESET_TEXT
+  RESET_TEXT,
+  USER
 };

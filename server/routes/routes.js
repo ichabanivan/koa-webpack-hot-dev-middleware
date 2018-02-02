@@ -7,16 +7,15 @@ import db from '../db/db';
 let routes = {};
 
 routes.verify = async (ctx, next) => {
-  let { authorization, _id } = ctx.request.header;
+  let { authorization } = ctx.request.header;
 
   if (authorization) {
-    let id = new ObjectId(_id);
     let token = authorization.split(' ')[1];
-
     try {
       jwt.verify(token, config.privateKey)
       await next()
     } catch (error) {
+      console.log(error)
       ctx.message = "Error - cannot verify user data";
       console.log("Error - cannot verify user data");
     }
@@ -144,10 +143,11 @@ routes.del = async (ctx) => {
     const id = new ObjectId(ctx.params.id);
     ctx.body = await db.deleteTodo(id)
     if (!ctx.body.result.ok) {
-      ctx.message = e;
+      ctx.message = 'error del';
     }
   } catch (error) {
-    ctx.message = e;
+    console.log(error)
+    ctx.message = error;
   }  
 };
 

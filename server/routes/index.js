@@ -9,10 +9,10 @@ const router = new Router();
 router
   .post('/signUp', routes.signup)
   .post('/signIn', routes.signin)
-  .post('/addTodo', routes.verify, routes.addTodo)
-  .put('/updateTodo', routes.verify, routes.updateTodo)
-  .del('/:id', routes.verify, routes.del)
-  .get('/listTodos', routes.verify, routes.listTodos)
+  .post('/app/addTodo', routes.verify, routes.addTodo)
+  .put('/app/updateTodo', routes.verify, routes.updateTodo)
+  .del('/app/:id', routes.verify, routes.del)
+  .get('/app/listTodos', routes.verify, routes.listTodos)
   .get("*", async (ctx, next) => {
     ctx.set('Content-Type', 'text/html');
     ctx.body = fs.readFileSync(path.resolve(__dirname, '../../src/index.html'));

@@ -36,7 +36,7 @@ database.findAndUpdateTodo = async (id, todo) => {
 }
 
 database.deleteTodo = async (id) => {
-  return await database.collection('todos').deleteOne({ _id: id })
+  return await database.mongo.collection('todos').deleteOne({ _id: id })
 }
 
 export default database;
