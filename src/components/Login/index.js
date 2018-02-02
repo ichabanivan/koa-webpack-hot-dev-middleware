@@ -52,7 +52,7 @@ class Login extends Component {
   render() {
 
     return (
-      <form>
+      <form className="auth">
         <h2>Login</h2>
 
         <input onChange={this.handleName} type="text" placeholder="Username" val={this.state.username}/>

@@ -36,7 +36,7 @@ export function chooseModal(modal) {
 export const hideModalError = () => {
   return (dispatch) => {
     dispatch(hideModals());
-    dispatch(push('/'));
+    dispatch(push('/app/'));
   }
 };
 
@@ -44,14 +44,13 @@ export const hideModalAndRemoveTodo = (_id) => {
   return (dispatch) => {
     dispatch(actionRemoveTodo(_id));
     dispatch(hideModals());
-    dispatch(push('/'));
   }
 };
 
 export const hideModalRemoveTodo = () => {
   return (dispatch) => {
     dispatch(hideModals());
-    dispatch(goBack());
+    dispatch(push('/app/'));
   }
 };
 

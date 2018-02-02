@@ -82,3 +82,29 @@ body {
   border: 1px solid #3a3a3a;
   background-color: #fff;
 }
+
+.auth input {
+  display: block;
+  width: 80%;
+  padding: 5px;
+  border: none;
+  border-bottom: 2px solid #ccc;
+  margin: auto;
+  margin-bottom: 20px;
+}
+
+.auth button {
+  display: block;
+  width: 80%;
+  padding: 5px;
+  border: none;
+  margin: auto;
+  margin-bottom: 20px;
+  background-color: #eee;
+  cursor: pointer
+}
+
+.auth a {
+  display: block;
+  text-align: center;
+}

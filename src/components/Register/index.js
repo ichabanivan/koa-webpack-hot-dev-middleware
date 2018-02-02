@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { reg } from '../../actions/auth'
+import { Link } from 'react-router-dom';
 
 import Input from '../Input/';
 import TodoList from '../TodoList/';
@@ -59,14 +60,15 @@ class Register extends Component {
   render() {
 
     return (
-      <form>
+      <form className="auth">
         <h2>Register</h2>
 
         <input onChange={this.handleName} type="text" placeholder="Username" val={this.state.username}/>
         <input onChange={this.handlePassword1} type="password" placeholder="Password" val={this.state.password1}/>
-        <input onChange={this.handlePassword2} type="password" placeholder="Password" val={this.state.password2}/>
+        <input onChange={this.handlePassword2} type="password" placeholder="Repeat password" val={this.state.password2}/>
 
         <button onClick={this.reg} type="submit">Register</button>
+        <Link to="/login">Login</Link>
       </form>
     );
   }

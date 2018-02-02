@@ -95,7 +95,7 @@ class Input extends Component {
             value={ body }
             onChange={ this.changeInput }
           />
-          <span onClick={() => push('/') } title="Close editing"> X </span>
+          <span onClick={() => push('/app/') } title="Close editing"> X </span>
         </div>
       );
     } else {

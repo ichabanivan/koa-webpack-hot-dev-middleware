@@ -28,16 +28,16 @@ export const updateTodo = (todo, _id) => {
             type: ACTIONS.UPDATE_TODO,
             todo: res.value
           });
-          dispatch(push(`app/${_id}`))
+          dispatch(push(`/app/`))
         } else {
-          dispatch(push(`app/${_id}/error`));
+          dispatch(push(`/app/${_id}/error`));
         }
       } catch (error) {
         console.error('/updateTodo - error')
-        dispatch(push(`app/${_id}/error`));
+        dispatch(push(`/app/${_id}/error`));
       }
     } else {
-      dispatch(push(`app/${_id}/error`));
+      dispatch(push(`/app/${_id}/error`));
     }
   }
 };
@@ -114,13 +114,13 @@ export function actionRemoveTodo(_id) {
         dispatch({
           type: ACTIONS.RESET_TEXT
         });
-        dispatch(push('/'));
+        dispatch(push('/app/'));
       } else {
-        dispatch(push(`app/${_id}/error`));
+        dispatch(push(`/app/${_id}/error`));
       }
     } catch (error) {
       console.error('Response was not received')
-      dispatch(push(`app/${_id}/error`));
+      dispatch(push(`/app/${_id}/error`));
     }
   }
 }
