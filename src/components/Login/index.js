@@ -14,12 +14,6 @@ import ModalRemoveTodo from '../ModalRemoveTodo/';
 import ModalChangeStatus from '../ModalChangeStatus/';
 
 class Login extends Component {
-
-  login = (e) => {
-    e.preventDefault()
-    console.log('login')
-  }
-
   state = {
     username: '',
     passwords: '',
@@ -27,6 +21,7 @@ class Login extends Component {
 
   login = (e) => {
     e.preventDefault()
+
     const { username, password } = this.state;
     const { login } = this.props;
 
@@ -47,6 +42,7 @@ class Login extends Component {
       username: e.target.value
     })
   }
+
   handlePassword = (e) => {
     this.setState({
       password: e.target.value

@@ -20,10 +20,10 @@ class Register extends Component {
   }
 
   reg = (e) => {
+    e.preventDefault()
+    
     const { username, password1, password2 } = this.state;
     const { reg } = this.props;
-    e.preventDefault()
-    console.log('reg')
 
     if (this.state.username.length < 3) {
       console.log(this.state.username)
