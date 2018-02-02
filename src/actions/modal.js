@@ -2,7 +2,12 @@ import ACTIONS from '../constants/';
 
 import { push, goBack } from 'react-router-redux';
 
-import { actionRemoveTodo, actionChangeStatus, updateTodo } from './todo';
+import {
+  actionRemoveTodo,
+  actionChangeStatus,
+  updateTodo,
+  shareTodo
+} from "./todo";
 
 export const showModal = (type) => {
   return {
@@ -58,9 +63,10 @@ export const hideModalRemoveTodo = () => {
   }
 };
 
-export const hideModalAndShareTodo = (todo, _id, username) => {
+export const hideModalAndShareTodo = (_id, username) => {
   return (dispatch) => {
-    dispatch(updateTodo(todo, _id, username));
+    console.log("hideModalAndShareTodo");
+    dispatch(shareTodo(_id, username));
     dispatch(hideModals());
   }
 };

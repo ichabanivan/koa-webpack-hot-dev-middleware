@@ -7,10 +7,46 @@ export const newText = (text) => ({
   text
 });
 
+export const shareTodo = (_id, shareUsername) => {
+  return async (dispatch, getState) => {
+    console.log("shareTodo");
+    let todo = { _id, shareUsername };
+    try {
+      let response = await fetch('/app/shareTodo', {
+        method: 'PUT',
+        body: JSON.stringify(todo),
+        headers: new Headers({
+          'authorization': `Bearer ${state.user.authorization}`,
+          '_id': state.user._id // -
+        })
+      })
+
+      let res = await response.json();
+
+      console.log(res)
+
+      if (response.ok) {
+        dispatch({
+          type: ACTIONS.UPDATE_TODO,
+          todo: res.value
+        });
+        dispatch(push(`/app/`))
+      } else {
+        dispatch(push(`/app/${_id}/error`));
+      }
+    } catch (error) {
+      console.error('/shareTodo - error')
+      dispatch(push(`/app/${_id}/error`));
+    }
+  }
+};
+
+
 export const updateTodo = (todo, _id, shareUsername) => {
   return async (dispatch, getState) => {
     let state = getState();
     todo.share.push(shareUsername) // ?
+    console.log(todo)
     if (todo.body) {
       try {
         let response = await fetch('/app/updateTodo', {

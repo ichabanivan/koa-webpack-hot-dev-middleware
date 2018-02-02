@@ -15,7 +15,7 @@ class ModalShareTodo extends Component {
     e.preventDefault();
     const _id = this.props._id;
 
-    this.props.hideModalAndShareTodo(_id, this.state);
+    this.props.hideModalAndShareTodo(_id, this.state.username);
   };
 
   disagree = (e) => {
