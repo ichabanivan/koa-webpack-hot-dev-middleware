@@ -7,6 +7,7 @@ import webpackConfig from '../../webpack.config';
 function koaDevMiddleware(devMiddleware, compiler) {
   return (ctx, next) => Promise.all([
     new Promise((resolve, reject) => {
+      // waitUntilValid - Executes a callback function when the compiler bundle is valid
       devMiddleware.waitUntilValid(() => {
         resolve(true);
       });
@@ -18,27 +19,21 @@ function koaDevMiddleware(devMiddleware, compiler) {
     new Promise((resolve) => {
       devMiddleware(ctx.req, {
         end: (content) => {
-          ctx.body = content;
+          ctx.body = content; // buffer - bundle.js 
           resolve();
         },
-        setHeader: ctx.set.bind(ctx),
-        locals: ctx.state
+        setHeader: ctx.set.bind(ctx)
       }, () => resolve(next()));
     })
-  ]);
+  ])
 }
 
 export default function middleware() {
   const compiler = webpack(webpackConfig);
-  const options = {
-    dev: {
-      publicPath: compiler.options.output.publicPath
-    },
-    hot: {}
-  };
-
-  const hotMiddleware = webpackHotMiddleware(compiler, options.hot);
-  const devMiddleware = webpackDevMiddleware(compiler, options.dev);
+  const hotMiddleware = webpackHotMiddleware(compiler, {});
+  const devMiddleware = webpackDevMiddleware(compiler, {
+    publicPath: compiler.options.output.publicPath
+  });
 
   return Object.assign(koaDevMiddleware(devMiddleware, compiler), {
     devMiddleware,
@@ -46,7 +41,7 @@ export default function middleware() {
     close(callback) {
       devMiddleware.close(() => {
         hotMiddleware.close(callback);
-      });
+      })
     }
-  });
-};
+  })
+}

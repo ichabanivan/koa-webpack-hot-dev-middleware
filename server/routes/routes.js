@@ -32,7 +32,7 @@ routes.signup = async (ctx) => {
     username: request.username,
     password: request.password
   }
-  let token = jwt.sign(user, config.privateKey, { expiresIn: '10h' });
+  let token = jwt.sign(user, config.privateKey, { expiresIn: '1h' });
 
   let userData = await db.findOneUser({ username: request.username })
 

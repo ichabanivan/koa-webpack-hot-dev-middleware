@@ -36,7 +36,7 @@ export function chooseModal(modal) {
 export const hideModalError = () => {
   return (dispatch) => {
     dispatch(hideModals());
-    dispatch(goBack());
+    dispatch(push('/'));
   }
 };
 
