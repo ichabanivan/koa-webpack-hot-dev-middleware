@@ -2,7 +2,7 @@ import ACTIONS from '../constants/';
 
 import { push, goBack } from 'react-router-redux';
 
-import { actionRemoveTodo, actionChangeStatus } from './todo';
+import { actionRemoveTodo, actionChangeStatus, updateTodo } from './todo';
 
 export const showModal = (type) => {
   return {
@@ -21,12 +21,15 @@ export const hideModals = () => {
 
 export function chooseModal(modal) {
   return (dispatch) => {
+    console.log(modal)
     if (modal === 'change-label') {
       dispatch(showModal(ACTIONS.MODAL_STATUS));
     } else if (modal === 'remove-todo') {
       dispatch(showModal(ACTIONS.MODAL_REMOVE));
     } else if (modal === 'error') {
       dispatch(showModal(ACTIONS.MODAL_ERROR));
+    } else if (modal === 'share') {
+      dispatch(showModal(ACTIONS.MODAL_SHARE));
     } else {
       dispatch(hideModals());
     }
@@ -47,7 +50,22 @@ export const hideModalAndRemoveTodo = (_id) => {
   }
 };
 
+// hidemodals можно сделать 1 метод на всех
 export const hideModalRemoveTodo = () => {
+  return (dispatch) => {
+    dispatch(hideModals());
+    dispatch(push('/app/'));
+  }
+};
+
+export const hideModalAndShareTodo = (todo, _id, username) => {
+  return (dispatch) => {
+    dispatch(updateTodo(todo, _id, username));
+    dispatch(hideModals());
+  }
+};
+
+export const hideModalShareTodo = () => {
   return (dispatch) => {
     dispatch(hideModals());
     dispatch(push('/app/'));

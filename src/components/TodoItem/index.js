@@ -22,6 +22,10 @@ class TodoItem extends Component {
             className="item__label"
             onClick={() => push(`/app/${todo._id}/change-label`)}
           > { todo.status } </button>
+          <button
+            className="item__label"
+            onClick={() => push(`/app/${todo._id}/share`)}
+          > Share </button>
 
           <span className="item__text">{ todo.body }</span>
 

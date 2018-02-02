@@ -15,7 +15,7 @@ import './index.css';
 class App extends Component {
   componentDidMount = () => {
     const { push, user } = this.props;
-    user ? push('/app') : push('/login')
+    if (!user) push('/login')
   }
   
   render() {

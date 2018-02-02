@@ -12,7 +12,7 @@ routes.verify = async (ctx, next) => {
   if (authorization) {
     let token = authorization.split(' ')[1];
     try {
-      jwt.verify(token, config.privateKey)
+      ctx.user = jwt.verify(token, config.privateKey)
       await next()
     } catch (error) {
       console.log(error)
@@ -31,7 +31,7 @@ routes.signup = async (ctx) => {
     username: request.username,
     password: request.password
   }
-  let token = jwt.sign(user, config.privateKey, { expiresIn: '1h' });
+  // let token = jwt.sign(user, config.privateKey, { expiresIn: '1h' });
 
   let userData = await db.findOneUser({ username: request.username })
 
@@ -42,14 +42,15 @@ routes.signup = async (ctx) => {
       password: request.password
     })
 
-    let tokenForUser = jwt.sign({
-      username: request.name
+    let token = jwt.sign({
+      username: request.name,
+      id: result._id
     }, config.privateKey)
 
     ctx.body = JSON.stringify({
       _id: result.ops[0]._id,
       username: result.ops[0].username,
-      authorization: tokenForUser
+      authorization: token
     })
   } else {
     ctx.message = 'User exist';
@@ -63,11 +64,11 @@ routes.signin = async (ctx) => {
 
   if (user) {
     let tokenForUser = jwt.sign({
-      username: user.username
+      username: user.username,
+      _id: user._id,
     }, config.privateKey)
 
     ctx.body = JSON.stringify({
-      _id: user._id,
       username: user.username,
       authorization: tokenForUser
     })
@@ -78,7 +79,10 @@ routes.signin = async (ctx) => {
 
 routes.listTodos = async (ctx) => {
   try {
-    let response = await db.findAllTodos()
+    // Принимает пользователя по которому искать
+    let response = await db.findAllTodos({
+      "share": ctx.user.username
+    })
     ctx.body = JSON.stringify(response)
   } catch (error) {
     ctx.message = error;
@@ -90,22 +94,22 @@ routes.addTodo = async (ctx) => {
   try {
     let date = new Date().toLocaleDateString();
 
-    let todo = await JSON.parse(ctx.request.body);
-    let result;
+    let body = await JSON.parse(ctx.request.body);
 
-    let todoFromDB = await db.findOneTodo({ body: todo.body })
+    body.share = [ctx.user.username]
+
+    let todoFromDB = await db.findOneTodo({ body: body.body })
 
     if (todoFromDB) {
       console.log('You have same todo')
       ctx.message = 'You have same todo';
-    } else if (todo.body && todo.status) {
-      todo.created = date;
-      todo.modified = date;
+    } else if (body.body && body.status) {
+      body.created = date;
+      body.modified = date;
 
       try {
-        let insertOne = await db.addTodo(todo)
-        result = insertOne.ops[0]
-        ctx.body = result
+        let todo = await db.addTodo(body)
+        ctx.body = todo.ops[0]
       } catch (error) {
         console.log(error);
       }

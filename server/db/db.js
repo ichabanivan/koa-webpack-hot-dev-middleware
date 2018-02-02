@@ -15,8 +15,8 @@ database.addUser = async (user) => {
   return await database.mongo.collection('users').insertOne(user)
 }
 
-database.findAllTodos = async () => {
-  return await database.mongo.collection('todos').find({}).toArray()
+database.findAllTodos = async (req) => {
+  return await database.mongo.collection('todos').find(req).toArray()
 }
 
 database.findOneTodo = async (todo) => {

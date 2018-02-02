@@ -9,6 +9,9 @@ const initialState = {
   },
   [CONSTANTS.MODAL_REMOVE]: {
     isVisible: false
+  },
+  [CONSTANTS.MODAL_SHARE]: {
+    isVisible: false
   }
 };
 
@@ -34,6 +37,14 @@ export default function modals(state = initialState, action) {
       return {
         ...initialState,
         [CONSTANTS.MODAL_STATUS]: {
+          isVisible: true
+        }
+      };
+    
+    case CONSTANTS.MODAL_SHARE:
+      return {
+        ...initialState,
+        [CONSTANTS.MODAL_SHARE]: {
           isVisible: true
         }
       };

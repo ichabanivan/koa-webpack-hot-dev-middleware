@@ -10,6 +10,7 @@ import Filters from '../Filters/';
 
 import ModalError from '../ModalError/';
 import ModalRemoveTodo from '../ModalRemoveTodo/';
+import ModalShareTodo from '../ModalShareTodo/';
 import ModalChangeStatus from '../ModalChangeStatus/';
 
 class Todos extends Component {
@@ -61,6 +62,7 @@ class Todos extends Component {
         <Filters />
         <ModalError />
         <ModalRemoveTodo _id={id} />
+        <ModalShareTodo _id={id} />
         <ModalChangeStatus _id={id} />
       </div>
     );

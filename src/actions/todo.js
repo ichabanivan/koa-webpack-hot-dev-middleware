@@ -7,9 +7,10 @@ export const newText = (text) => ({
   text
 });
 
-export const updateTodo = (todo, _id) => {
+export const updateTodo = (todo, _id, shareUsername) => {
   return async (dispatch, getState) => {
     let state = getState();
+    todo.share.push(shareUsername) // ?
     if (todo.body) {
       try {
         let response = await fetch('/app/updateTodo', {
@@ -17,7 +18,7 @@ export const updateTodo = (todo, _id) => {
           body: JSON.stringify(todo),
           headers: new Headers({
             'authorization': `Bearer ${state.user.authorization}`,
-            '_id': state.user._id
+            '_id': state.user._id // -
           })
         })
 
