@@ -10,6 +10,7 @@ export const login = (user) => {
         body: JSON.stringify(user)
       })
       let res = await response.json()
+      console.log(res)
       
       localStorage.setItem('user', JSON.stringify(res));
 
@@ -32,6 +33,7 @@ export const reg = (user) => {
         body: JSON.stringify(user)
       })
       let res = await response.json()
+      console.log(res)
 
       localStorage.setItem('user', JSON.stringify(res));
 

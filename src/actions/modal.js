@@ -54,9 +54,9 @@ export const hideModal = () => {
   }
 };
 
-export const hideModalAndShareTodo = (_id, username) => {
+export const hideModalAndShareTodo = (_id, userID) => {
   return (dispatch) => {
-    dispatch(shareTodo(_id, username));
+    dispatch(shareTodo(_id, userID));
     dispatch(hideModals());
   }
 };

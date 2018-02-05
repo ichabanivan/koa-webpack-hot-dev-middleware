@@ -12,44 +12,59 @@ class TodoItem extends Component {
       todo,
       push,
       isActive,
-      editTodo
+      editTodo,
+      user
     } = this.props;
 
     let activeClass = isActive ? 'item--active': '';
 
-    return (
-      <div className={`todo__item item ${activeClass}`} >
-        <div className="item__top">
-          <button
-            className="item__label"
-            onClick={() => editTodo(`/app/${todo._id}/change-label`, todo)}
-          > { todo.status } </button>
-          <button
-            className="item__label"
-            onClick={() => editTodo(`/app/${todo._id}/share`, todo)}
-          > Share </button>
-
-          <span className="item__text">{ todo.body }</span>
-
-          <div className="item__btns">
+    if(user) {
+      return (
+        <div className={`todo__item item ${activeClass}`} >
+          <div className="item__top">
+            Status: <button
+              className="item__label"
+              onClick={() => editTodo(`/app/${todo._id}/change-label`, todo)}
+            > { todo.status } </button>
             <button
-              className="item__delete"
-              onClick={() => editTodo(`/app/${todo._id}/remove-todo`, todo)}
-            > X </button>
-            <button
-              className="item__edit"
-              onClick={() => editTodo(`/app/${todo._id}`, todo)}
-            > edit </button>
+              className="item__label"
+              onClick={() => editTodo(`/app/${todo._id}/share`, todo)}
+            > Share </button>
+
+            <span className="item__text">{ todo.body }</span>
+
+            <div className="item__btns">
+              <button
+                className="item__delete"
+                onClick={() => editTodo(`/app/${todo._id}/remove-todo`, todo)}
+              > X </button>
+              <button
+                className="item__edit"
+                onClick={() => editTodo(`/app/${todo._id}`, todo)}
+              > edit </button>
+            </div>
+          </div>
+
+          <div>
+            <span>Owner: <strong>{ user.username }</strong></span>
+            <div>Created: { todo.created } </div>
+            <div>Мodified: { todo.modified } </div>
           </div>
         </div>
-
-        <div>
-          <div>Created: { todo.created } </div>
-          <div>Мodified: { todo.modified } </div>
-        </div>
-      </div>
-    );
+      );
+    } else {
+      return null
+    }
+    
   }
 }
 
-export default connect(null, { editTodo })(TodoItem)
+const mapStateToProps = (state, ownProps) => {
+  return {
+    user: state.users.filter((user) => {
+      return ownProps.todo.owner === user._id
+    })[0]
+  }
+}
+
+export default connect(mapStateToProps, { editTodo })(TodoItem)

@@ -15,6 +15,8 @@ const SET_PARAMS = 'SET_PARAMS';
 const RESET_TEXT = 'RESET_TEXT';
 const INIT_TODOS = 'INIT_TODOS';
 const USER = 'USER';
+const USERS_INIT = 'USERS_INIT';
+
 
 export default {
   ADD_TODO,
@@ -33,5 +35,6 @@ export default {
   INIT_TODOS,
   RESET_TEXT,
   USER,
-  MODAL_SHARE
+  MODAL_SHARE,
+  USERS_INIT
 };

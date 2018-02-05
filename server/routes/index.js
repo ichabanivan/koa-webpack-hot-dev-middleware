@@ -15,6 +15,8 @@ router
   .put("/app/shareTodo", controller.verify, controller.shareTodo)
   .del("/app/:id", controller.verify, controller.del)
   .get("/app/listTodos", controller.verify, controller.listTodos)
+  .get("/app/findOneUser", controller.verify, controller.findOneUserById)
+  .get("/app/findAllUsers", controller.verify, controller.findAllUsers)
   .get("*", async (ctx, next) => {
     ctx.set("Content-Type", "text/html");
     ctx.body = fs.readFileSync(path.resolve(__dirname, "../../src/index.html"));

@@ -7,10 +7,16 @@ export const newText = (text) => ({
   text
 });
 
-export const shareTodo = (_id, shareUsername) => {
+export const shareTodo = (_id, shareUserID) => {
   return async (dispatch, getState) => {
     let state = getState();
-    let todo = { _id, username: shareUsername, canEdit: '' };
+
+    let todo = { 
+      _id, 
+      shareUserID 
+    };
+
+    console.log(todo)
 
     try {
       let response = await fetch('/app/shareTodo', {
@@ -42,6 +48,7 @@ export const shareTodo = (_id, shareUsername) => {
 
 
 export const updateTodo = (todo, _id, shareUsername) => {
+  _id
   return async (dispatch, getState) => {
     let state = getState();
 
@@ -94,7 +101,7 @@ export function addNewTodo(text) {
       }
     });
 
-    let todo = { body: text, status: "new", canEdit: state.user.username, owner: state.user.username };
+    let todo = { body: text, status: "new", canEdit: state.user.username, owner: state.user._id };
 
     if (isUnic) {
       try {
@@ -253,8 +260,10 @@ export function accessEditing(access, _id) {
 export function editTodo(link, todo) {
   return async (dispatch, getState) => {
     let state = getState();
-    let username = state.user.username;
-    if (todo.canEdit === username) {
+    let userId = state.user._id;
+
+    console.log(todo.canEdit, userId)
+    if (todo.canEdit === userId) {
       dispatch(push(link))
     } else {
       console.error('/requestEditing error')

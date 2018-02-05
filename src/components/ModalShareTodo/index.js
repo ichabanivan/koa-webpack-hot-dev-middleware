@@ -5,16 +5,28 @@ import { connect } from 'react-redux';
 import CONSTANTS from '../../constants/';
 
 import { hideModalAndShareTodo, hideModal } from '../../actions/modal';
+import { initUsers } from '../../actions/users';
 
 class ModalShareTodo extends Component {
+
+  state = {
+    userId: null
+  }
+
+  componentDidMount = () => {
+    this.props.initUsers()
+  }
+  
+
   stopPropagation = (e) => {
     e.stopPropagation();
   };
 
   agree = (e) => {
     e.preventDefault();
-    const _id = this.props._id;
-    this.props.hideModalAndShareTodo(_id, this.state.username);
+    const todoId = this.props._id;
+    console.log(todoId, this.state.userId)
+    this.props.hideModalAndShareTodo(todoId, this.state.userId);
   };
 
   disagree = (e) => {
@@ -25,12 +37,12 @@ class ModalShareTodo extends Component {
 
   handleChange = (e) => {
     this.setState({
-      username: e.target.value
+      userId: e.target.value
     })
   }
 
   render() {
-    const { isVisible } = this.props;
+    const { isVisible, users } = this.props;
 
     if (isVisible) {
       return (
@@ -40,7 +52,13 @@ class ModalShareTodo extends Component {
               <div className="modal-content">
                 <h4> Do you want to share todo? </h4>
               </div>
-              <input className="username" placeholder="Username" onChange={this.handleChange}/>
+              <select className="username" onChange={this.handleChange}>
+                {
+                  users.map((user, index) => {
+                    return <option key={index} value={user._id}>{user.username}</option>
+                  })
+                }
+              </select>
               <div className="modal-footer">
                 <button
                   className="modal-action"
@@ -63,8 +81,9 @@ class ModalShareTodo extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    isVisible: state.modals[CONSTANTS.MODAL_SHARE].isVisible
+    isVisible: state.modals[CONSTANTS.MODAL_SHARE].isVisible,
+    users: state.users
   }
 };
 
-export default connect(mapStateToProps, { hideModal, hideModalAndShareTodo })(ModalShareTodo)
+export default connect(mapStateToProps, { hideModal, hideModalAndShareTodo, initUsers })(ModalShareTodo)

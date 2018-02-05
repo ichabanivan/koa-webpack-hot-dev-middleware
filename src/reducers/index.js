@@ -6,6 +6,7 @@ import filter from './filter';
 import modals from './modals';
 import inputText from './inputText';
 import user from './user';
+import users from './users';
 
 export default combineReducers({
   router: routerReducer,
@@ -13,5 +14,6 @@ export default combineReducers({
   modals,
   filter,
   inputText,
-  user
+  user,
+  users
 });

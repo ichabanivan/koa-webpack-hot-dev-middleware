@@ -1,4 +1,3 @@
-import { ObjectId } from 'mongodb';
 import jwt from 'jsonwebtoken';
 import { Base64 } from 'js-base64';
 
@@ -58,7 +57,7 @@ controller.signin = async (ctx) => {
   let request = JSON.parse(ctx.request.body)
   let password = Base64.encode(request.password)
   let user = await db.findOneUser({ username: request.username, password })
-
+  console.log(request)
   if (user) {
     let tokenForUser = jwt.sign({
       username: user.username,
@@ -66,6 +65,7 @@ controller.signin = async (ctx) => {
     }, config.privateKey, { expiresIn: '1h' })
 
     ctx.body = JSON.stringify({
+      _id: user._id,
       username: user.username,
       authorization: tokenForUser
     })
@@ -77,9 +77,11 @@ controller.signin = async (ctx) => {
 controller.listTodos = async (ctx) => {
   try {
     let response = await db.findAllTodos({
-      "share": ctx.user.username
+      "share": ctx.user._id
     })
     ctx.body = JSON.stringify(response)
+
+    console.log(ctx.body)
   } catch (error) {
     ctx.message = error;
     console.log(error);
@@ -91,17 +93,20 @@ controller.addTodo = async (ctx) => {
     let date = new Date().toLocaleDateString();
 
     let body = await JSON.parse(ctx.request.body);
-    let username = ctx.user.username;
+    let userId = ctx.user._id;
 
-    body.share = [username]
-    body.canEdit = username;
+    body.share = [userId]
+    body.canEdit = userId;
+    body.request = '';
 
     let todoFromDB = await db.findOneTodo({ 
       body: body.body,
-      share: username
+      share: userId
     })
 
     if (todoFromDB) {
+      let body = await JSON.parse(ctx.request.body);
+      let userId = ctx.user._id;
       console.log('You have same todo')
       ctx.message = 'You have same todo';
     } else if (body.body && body.status) {
@@ -125,11 +130,11 @@ controller.addTodo = async (ctx) => {
 
 controller.updateTodo = async (ctx) => {
   try {
-    let date = new Date().toLocaleDateString();
+    let date = new Date().toLocaleDateString(); let body = await JSON.parse(ctx.request.body);
+    let userId = ctx.user._id;
     let todo = JSON.parse(ctx.request.body);
-    let id = new ObjectId(todo._id);
 
-    ctx.body = await db.findAndUpdateTodo(id, {
+    ctx.body = await db.findAndUpdateTodo(todo._id, {
       $set: {
         modified: date,
         body: todo.body,
@@ -149,8 +154,8 @@ controller.shareTodo = async ctx => {
   try {
     let req = JSON.parse(ctx.request.body);
 
-    let id = new ObjectId(req._id);
-    ctx.body = await db.share(id, req.username)
+    console.log(req)
+    ctx.body = await db.share(req._id, req.username)
   } catch (error) {
     ctx.message = error;
   }
@@ -160,23 +165,22 @@ controller.access = async ctx => {
   try {
     let req = JSON.parse(ctx.request.body);
 
-    let id = new ObjectId(req._id);
     let username = ctx.user.username;
-
+    console.log(ctx.user._id)
     if (req.access) {
-      ctx.body = await db.findAndUpdateTodo(id, {
+      ctx.body = await db.findAndUpdateTodo(req._id, {
         $set: {
-          canEdit: username,
+          canEdit: ctx.user._id,
           request: null
         }
       })
     } else {
-      let todo = await db.findOneTodo({ _id: id})
+      let todo = await db.findOneTodo({ _id: req._id})
       let owner = todo.owner;
 
-      ctx.body = await db.findAndUpdateTodo(id, {
+      ctx.body = await db.findAndUpdateTodo(req._id, {
         $set: {
-          canEdit: owner,
+          canEdit: owner, // id owner
           request: null
         },
         $pull: {
@@ -192,15 +196,37 @@ controller.access = async ctx => {
 
 controller.del = async (ctx) => {
   try {
-    const id = new ObjectId(ctx.params.id);
-    ctx.body = await db.deleteTodo(id)
+    ctx.body = await db.deleteTodo(ctx.params.id)
     if (!ctx.body.result.ok) {
       ctx.message = 'error del';
     }
   } catch (error) {
     console.log(error)
     ctx.message = error;
-  }  
+  }
 };
+
+
+controller.findAllUsers = async (ctx) => {
+  try {
+    let response = await db.findAllUsers()
+    ctx.body = JSON.stringify(response)
+  } catch (error) {
+    ctx.message = error;
+    console.log(error);
+  }
+}
+
+controller.findOneUserById = async (ctx) => {
+  let body = await JSON.parse(ctx.request.body);
+  let userId = body._id;
+  try {
+    let response = await db.findOneUser()
+    ctx.body = JSON.stringify(response)
+  } catch (error) {
+    ctx.message = error;
+    console.log(error);
+  }
+}
 
 export default controller

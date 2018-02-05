@@ -24,6 +24,7 @@ class App extends Component {
       <div className="todo">
 
         <h1>Todos</h1>
+        <p>Hello <strong>{this.props.user.username}</strong></p>
         <Route path="/login" component={Login} />
         <Route path="/reg" component={Register} />
         <Route path="/app/:id?/:modal?" component={ Todos } />

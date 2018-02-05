@@ -27,8 +27,8 @@ class ShareTodos extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    todos: state.todos.filter((todo) => {
-      return todo.request === state.user.username;
+    todos: state.todos.filter((todo) => {      
+      return todo.request === state.user._id;
     })
   }
 };
