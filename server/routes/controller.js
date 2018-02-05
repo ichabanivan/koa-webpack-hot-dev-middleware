@@ -157,12 +157,12 @@ controller.access = async ctx => {
     let req = JSON.parse(ctx.request.body);
 
     let id = new ObjectId(req._id);
+    let username = ctx.user.username;
 
     if (req.access) {
-      console.log(ctx.user.username)
       ctx.body = await db.findAndUpdateTodo(id, {
         $set: {
-          canEdit: ctx.user.username,
+          canEdit: username,
           request: null
         }
       })
@@ -177,7 +177,7 @@ controller.access = async ctx => {
           request: null
         },
         $pull: {
-          share: ctx.user.username
+          share: username === owner ? null : username
         }
       })
     }

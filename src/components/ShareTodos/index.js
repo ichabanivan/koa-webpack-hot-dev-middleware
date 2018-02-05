@@ -11,9 +11,14 @@ class ShareTodos extends Component {
     } = this.props;
 
     if (todos.length) {
-      return todos.map((todo, index) => {
-        return <ShareTodo key={index} todo={todo} />
-      })
+      return <div>
+        <h2>New todos</h2>
+        {
+          todos.map((todo, index) => {
+            return <ShareTodo key={index} todo={todo} />
+          })
+        }
+      </div>
     } else {
       return null
     }

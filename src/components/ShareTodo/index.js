@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { accessEditing } from '../../actions/todo';
 
+import './index.css';
+
 class ShareTodo extends Component {
   accessTrue = (e) => {
     const {
@@ -30,10 +32,10 @@ class ShareTodo extends Component {
     } = this.props;
 
 
-    return <div>
-      {todo._id}
-      <button onClick={this.accessTrue}>+</button>
-      <button onClick={this.accessFalse}>-</button>
+    return <div className="share">
+      id: {todo._id}
+      <button className="share__agree" onClick={this.accessTrue}>+</button>
+      <button className="share__disagree" onClick={this.accessFalse}>-</button>
     </div>
   }
 }
