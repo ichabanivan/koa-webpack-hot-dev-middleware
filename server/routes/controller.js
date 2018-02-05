@@ -4,9 +4,9 @@ import jwt from 'jsonwebtoken';
 import config from '../config';
 import db from '../db/db';
 
-let routes = {};
+let controller = {};
 
-routes.verify = async (ctx, next) => {
+controller.verify = async (ctx, next) => {
   let { authorization } = ctx.request.header;
 
   if (authorization) {
@@ -25,7 +25,7 @@ routes.verify = async (ctx, next) => {
   }
 }
 
-routes.canEdit = async (ctx, next) => {
+controller.canEdit = async (ctx, next) => {
   console.log(ctx.header)
   console.log(ctx.body)
   // let { authorization } = ctx.request.header;
@@ -46,7 +46,7 @@ routes.canEdit = async (ctx, next) => {
   // }
 }
 
-routes.signup = async (ctx) => {
+controller.signup = async (ctx) => {
   let request = JSON.parse(ctx.request.body)
   let user = {
     username: request.username,
@@ -78,7 +78,7 @@ routes.signup = async (ctx) => {
   }
 }
 
-routes.signin = async (ctx) => {
+controller.signin = async (ctx) => {
   let request = JSON.parse(ctx.request.body)
 
   let user = await db.findOneUser({ username: request.username, password: request.password })
@@ -98,7 +98,7 @@ routes.signin = async (ctx) => {
   }
 }
 
-routes.listTodos = async (ctx) => {
+controller.listTodos = async (ctx) => {
   try {
     // Принимает пользователя по которому искать
     let response = await db.findAllTodos({
@@ -111,7 +111,7 @@ routes.listTodos = async (ctx) => {
   }  
 }
 
-routes.addTodo = async (ctx) => {
+controller.addTodo = async (ctx) => {
   try {
     let date = new Date().toLocaleDateString();
 
@@ -144,7 +144,7 @@ routes.addTodo = async (ctx) => {
   }
 }
 
-routes.updateTodo = async (ctx) => {
+controller.updateTodo = async (ctx) => {
   try {
     let date = new Date().toLocaleDateString();
     let todo = JSON.parse(ctx.request.body);
@@ -164,7 +164,7 @@ routes.updateTodo = async (ctx) => {
   }
 }
 
-routes.shareTodo = async ctx => {
+controller.shareTodo = async ctx => {
   try {
     let req = JSON.parse(ctx.request.body);
 
@@ -175,7 +175,7 @@ routes.shareTodo = async ctx => {
   }
 };
 
-routes.access = async ctx => {
+controller.access = async ctx => {
   try {
     let req = JSON.parse(ctx.request.body);
 
@@ -202,7 +202,7 @@ routes.access = async ctx => {
   }
 };
 
-routes.del = async (ctx) => {
+controller.del = async (ctx) => {
   try {
     const id = new ObjectId(ctx.params.id);
     ctx.body = await db.deleteTodo(id)
@@ -215,4 +215,4 @@ routes.del = async (ctx) => {
   }  
 };
 
-export default routes
+export default controller
