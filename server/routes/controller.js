@@ -32,7 +32,7 @@ controller.signup = async (ctx) => {
 
   let userData = await db.findOneUser({ username: request.username })
 
-  // if user don't exist, create new user
+  // if user doesn't exist, create new user
   if (!userData) {
     let result = await db.addUser({
       username: request.username,
