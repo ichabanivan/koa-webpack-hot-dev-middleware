@@ -28,9 +28,7 @@ database.addTodo = async (todo) => {
 }
 
 database.findAndUpdateTodo = async (id, todo) => {
-  return await database.mongo.collection('todos').findOneAndUpdate({ _id: id }, {
-    $set: todo
-  }, {
+  return await database.mongo.collection('todos').findOneAndUpdate({ _id: id }, todo, {
     returnOriginal: false
   })
 }

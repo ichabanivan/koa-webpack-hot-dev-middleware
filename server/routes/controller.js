@@ -126,9 +126,11 @@ controller.updateTodo = async (ctx) => {
     let id = new ObjectId(todo._id);
 
     ctx.body = await db.findAndUpdateTodo(id, {
-      modified: date,
-      body: todo.body,
-      status: todo.status
+      $set: {
+        modified: date,
+        body: todo.body,
+        status: todo.status
+      }
     })
 
     if (!ctx.body) {
@@ -157,17 +159,26 @@ controller.access = async ctx => {
     let id = new ObjectId(req._id);
 
     if (req.access) {
+      console.log(ctx.user.username)
       ctx.body = await db.findAndUpdateTodo(id, {
-        canEdit: ctx.user.username,
-        request: null
+        $set: {
+          canEdit: ctx.user.username,
+          request: null
+        }
       })
     } else {
       let todo = await db.findOneTodo({ _id: id})
       let owner = todo.owner;
+      console.log(owner)
 
       ctx.body = await db.findAndUpdateTodo(id, {
-        canEdit: owner,
-        request: null
+        $set: {
+          canEdit: owner,
+          request: null
+        },
+        $pull: {
+          share: ctx.user.username
+        }
       })
     }
 

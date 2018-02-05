@@ -35,15 +35,18 @@ const filterTodos = (todos, filter, text, username) => {
   switch (filter) {
     case CONSTANTS.FILTER_ALL:
       return todos.filter((todo) => {
-        return todo.body.indexOf(text) !== -1 && todo.request !== username;
+        let userIsInArray = todo.share.indexOf(username) >= 0;
+        return todo.body.indexOf(text) !== -1 && todo.request !== username && userIsInArray;
       });
     case CONSTANTS.FILTER_COMPLETED:
       return todos.filter((todo) => {
-        return todo.status === 'completed' && todo.body.indexOf(text) !== -1 && todo.request !== username;
+        let userIsInArray = todo.share.indexOf(username) >= 0;
+        return todo.status === 'completed' && todo.body.indexOf(text) !== -1 && todo.request !== username && userIsInArray;
       });
     case CONSTANTS.FILTER_ACTIVE:
       return todos.filter((todo) => {
-        return (todo.status === 'new' || todo.status === 'in progress') && todo.body.indexOf(text) !== -1 && todo.request !== username;
+        let userIsInArray = todo.share.indexOf(username) >= 0;
+        return (todo.status === 'new' || todo.status === 'in progress') && todo.body.indexOf(text) !== -1 && todo.request !== username && userIsInArray;
       });
     default: {
       break;
