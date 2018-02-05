@@ -3,12 +3,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import CONSTANTS from '../../constants/';
-import { hideModalError } from '../../actions/modal';
+import { hideModal } from '../../actions/modal';
 
 class ModalError extends Component {
   handleHide = (e) => {
     e.preventDefault();
-    this.props.hideModalError()
+    this.props.hideModal()
   };
 
   stopPropagation = (e) => {
@@ -48,4 +48,4 @@ const mapStateToProps = (state) => {
   }
 };
 
-export default connect(mapStateToProps, { hideModalError })(ModalError);
+export default connect(mapStateToProps, { hideModal })(ModalError);

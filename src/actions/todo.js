@@ -238,12 +238,12 @@ export function accessEditing(access, _id) {
           todo: todo.value
         })
       } else {
-        dispatch(push(`/app/0/error`));
+        dispatch(push(`/app/${_id}/error`));
       }
 
     } catch (error) {
       console.error('/requestEditing error')
-      dispatch(push(`/app/0/error`));
+      dispatch(push(`/app/${_id}/error`));
     }
   }
 }

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import CONSTANTS from '../../constants/';
 
-import { hideModalAndShareTodo, hideModalShareTodo } from '../../actions/modal';
+import { hideModalAndShareTodo, hideModal } from '../../actions/modal';
 
 class ModalShareTodo extends Component {
   stopPropagation = (e) => {
@@ -19,9 +19,8 @@ class ModalShareTodo extends Component {
 
   disagree = (e) => {
     e.preventDefault();
-    const _id = this.props._id;
 
-    this.props.hideModalShareTodo(_id);
+    this.props.hideModal();
   };
 
   handleChange = (e) => {
@@ -68,4 +67,4 @@ const mapStateToProps = (state) => {
   }
 };
 
-export default connect(mapStateToProps, { hideModalShareTodo, hideModalAndShareTodo })(ModalShareTodo)
+export default connect(mapStateToProps, { hideModal, hideModalAndShareTodo })(ModalShareTodo)

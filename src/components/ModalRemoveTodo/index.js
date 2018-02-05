@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import CONSTANTS from '../../constants/';
 
-import { hideModalAndRemoveTodo, hideModalRemoveTodo } from '../../actions/modal';
+import { hideModalAndRemoveTodo, hideModal } from '../../actions/modal';
 
 class ModalRemoveTodo extends Component {
   stopPropagation = (e) => {
@@ -20,9 +20,8 @@ class ModalRemoveTodo extends Component {
 
   disagree = (e) => {
     e.preventDefault();
-    const _id = this.props._id;
 
-    this.props.hideModalRemoveTodo(_id);
+    this.props.hideModal();
   };
 
   render() {
@@ -62,4 +61,4 @@ const mapStateToProps = (state) => {
   }
 };
 
-export default connect(mapStateToProps, { hideModalRemoveTodo, hideModalAndRemoveTodo })(ModalRemoveTodo)
+export default connect(mapStateToProps, { hideModal, hideModalAndRemoveTodo })(ModalRemoveTodo)

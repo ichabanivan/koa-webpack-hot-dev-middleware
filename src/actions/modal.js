@@ -40,13 +40,6 @@ export function chooseModal(modal) {
   };
 }
 
-export const hideModalError = () => {
-  return (dispatch) => {
-    dispatch(hideModals());
-    dispatch(push('/app/'));
-  }
-};
-
 export const hideModalAndRemoveTodo = (_id) => {
   return (dispatch) => {
     dispatch(actionRemoveTodo(_id));
@@ -54,8 +47,7 @@ export const hideModalAndRemoveTodo = (_id) => {
   }
 };
 
-// hidemodals можно сделать 1 метод на всех
-export const hideModalRemoveTodo = () => {
+export const hideModal = () => {
   return (dispatch) => {
     dispatch(hideModals());
     dispatch(push('/app/'));
@@ -66,13 +58,6 @@ export const hideModalAndShareTodo = (_id, username) => {
   return (dispatch) => {
     dispatch(shareTodo(_id, username));
     dispatch(hideModals());
-  }
-};
-
-export const hideModalShareTodo = () => {
-  return (dispatch) => {
-    dispatch(hideModals());
-    dispatch(push('/app/'));
   }
 };
 
