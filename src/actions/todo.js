@@ -105,7 +105,9 @@ export function addNewTodo(text) {
             'authorization': `Bearer ${state.user.authorization}`
           })
         })
+
         let res = await response.json()
+
         dispatch({
           type: ACTIONS.ADD_TODO,
           todo: res

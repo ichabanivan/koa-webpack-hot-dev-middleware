@@ -42,7 +42,7 @@ controller.signup = async (ctx) => {
     let token = jwt.sign({
       username: request.username,
       id: result._id
-    }, config.privateKey)
+    }, config.privateKey, { expiresIn: '1h' })
 
     ctx.body = JSON.stringify({
       _id: result.ops[0]._id,
@@ -63,7 +63,7 @@ controller.signin = async (ctx) => {
     let tokenForUser = jwt.sign({
       username: user.username,
       _id: user._id,
-    }, config.privateKey)
+    }, config.privateKey, { expiresIn: '1h' })
 
     ctx.body = JSON.stringify({
       username: user.username,
