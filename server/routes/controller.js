@@ -91,11 +91,15 @@ controller.addTodo = async (ctx) => {
     let date = new Date().toLocaleDateString();
 
     let body = await JSON.parse(ctx.request.body);
+    let username = ctx.user.username;
 
-    body.share = [ctx.user.username]
-    body.canEdit = ctx.user.username;
+    body.share = [username]
+    body.canEdit = username;
 
-    let todoFromDB = await db.findOneTodo({ body: body.body })
+    let todoFromDB = await db.findOneTodo({ 
+      body: body.body,
+      share: username
+    })
 
     if (todoFromDB) {
       console.log('You have same todo')
