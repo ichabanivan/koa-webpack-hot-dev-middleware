@@ -25,6 +25,27 @@ routes.verify = async (ctx, next) => {
   }
 }
 
+routes.canEdit = async (ctx, next) => {
+  console.log(ctx.header)
+  console.log(ctx.body)
+  // let { authorization } = ctx.request.header;
+
+  // if (authorization) {
+  //   let token = authorization.split(' ')[1];
+  //   try {
+  //     ctx.user = jwt.verify(token, config.privateKey)
+      await next()
+  //   } catch (error) {
+  //     console.log(error)
+  //     ctx.message = "Error - cannot verify user data";
+  //     console.log("Error - cannot verify user data");
+  //   }
+  // } else {
+  //   ctx.message = 'User does not have a token';
+  //   console.log('User does not have a token');
+  // }
+}
+
 routes.signup = async (ctx) => {
   let request = JSON.parse(ctx.request.body)
   let user = {
@@ -97,6 +118,7 @@ routes.addTodo = async (ctx) => {
     let body = await JSON.parse(ctx.request.body);
 
     body.share = [ctx.user.username]
+    console.log(body.share)
 
     let todoFromDB = await db.findOneTodo({ body: body.body })
 
@@ -145,12 +167,36 @@ routes.updateTodo = async (ctx) => {
 routes.shareTodo = async ctx => {
   try {
     let req = JSON.parse(ctx.request.body);
-    // let req = ctx.request.body;
-    // id заметки
+
+    let id = new ObjectId(req._id);
+    ctx.body = await db.share(id, req.username)
+  } catch (error) {
+    ctx.message = error;
+  }
+};
+
+routes.access = async ctx => {
+  try {
+    let req = JSON.parse(ctx.request.body);
+
     let id = new ObjectId(req._id);
 
-    ctx.body = await db.share(id, req.username)
+    if (req.access) {
+      ctx.body = await db.findAndUpdateTodo(id, {
+        canEdit: ctx.user.username,
+        request: null
+      })
+    } else {
+      let todo = await db.findOneTodo({ _id: id})
+      let owner = todo.owner;
 
+      ctx.body = await db.findAndUpdateTodo(id, {
+        canEdit: owner,
+        request: null
+      })
+    }
+
+    console.log(ctx.body)
   } catch (error) {
     ctx.message = error;
   }

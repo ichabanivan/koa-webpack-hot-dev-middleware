@@ -7,6 +7,7 @@ import { chooseModal } from '../../actions/modal';
 import Input from '../Input/';
 import TodoList from '../TodoList/';
 import Filters from '../Filters/';
+import ShareTodos from '../ShareTodos/';
 
 import ModalError from '../ModalError/';
 import ModalRemoveTodo from '../ModalRemoveTodo/';
@@ -60,6 +61,7 @@ class Todos extends Component {
         <Input _id={id} />
         <TodoList _id={id} />
         <Filters />
+        <ShareTodos />
         <ModalError />
         <ModalRemoveTodo _id={id} />
         <ModalShareTodo _id={id} />

@@ -10,6 +10,7 @@ router
   .post("/signUp", routes.signup)
   .post("/signIn", routes.signin)
   .post("/app/addTodo", routes.verify, routes.addTodo)
+  .post("/app/access", routes.verify, routes.access)
   .put("/app/updateTodo", routes.verify, routes.updateTodo)
   .put("/app/shareTodo", routes.verify, routes.shareTodo)
   .del("/app/:id", routes.verify, routes.del)

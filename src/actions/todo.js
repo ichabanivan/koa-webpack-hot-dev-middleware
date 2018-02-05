@@ -25,14 +25,14 @@ export const shareTodo = (_id, shareUsername) => {
 
       let res = await response.json();
 
-      console.log(res)
+      console.log(res, 'shareTodo')
 
       if (response.ok) {
-        // dispatch({
-        //   type: ACTIONS.UPDATE_TODO,
-        //   todo: res.value
-        // });
-        // dispatch(push(`/app/`))
+        dispatch({
+          type: ACTIONS.UPDATE_TODO,
+          todo: res.value
+        });
+        dispatch(push(`/app/`))
       } else {
         dispatch(push(`/app/${_id}/error`));
       }
@@ -219,6 +219,41 @@ export function initTodos() {
     } catch (error) {
       console.error('/listTodos error')
       dispatch(push(`app/${id}/error`));
+    }
+  }
+}
+
+export function accessEditing(access, _id) {
+  return async (dispatch, getState) => {
+    let state = getState();
+
+    try {
+      let response = await fetch('/app/access', {
+        method: 'POST',
+        headers: new Headers({
+          'authorization': `Bearer ${state.user.authorization}`
+        }),
+        body: JSON.stringify({
+          _id,
+          access
+        })
+      });
+
+      let todo = await response.json()
+      console.log(todo)
+
+      if (todo.ok) {
+        dispatch({
+          type: ACTIONS.UPDATE_TODO,
+          todo: todo.value
+        })
+      } else {
+        // dispatch(push(`app/${id}/error`));
+      }
+
+    } catch (error) {
+      console.error('/requestEditing error')
+      // dispatch(push(`app/000000/error`));
     }
   }
 }

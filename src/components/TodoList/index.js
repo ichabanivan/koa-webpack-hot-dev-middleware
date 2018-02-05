@@ -31,11 +31,11 @@ class TodoList extends Component {
   }
 }
 
-const filterTodos = (todos, filter, text) => {
+const filterTodos = (todos, filter, text, username) => {
   switch (filter) {
     case CONSTANTS.FILTER_ALL:
       return todos.filter((todo) => {
-        return todo.body.indexOf(text) !== -1;
+        return todo.body.indexOf(text) !== -1 && todo.canEdit === username;
       });
     case CONSTANTS.FILTER_COMPLETED:
       return todos.filter((todo) => {
@@ -53,7 +53,7 @@ const filterTodos = (todos, filter, text) => {
 
 const mapStateToProps = (state) => {
   return {
-    todos: filterTodos(state.todos, state.filter, state.inputText)
+    todos: filterTodos(state.todos, state.filter, state.inputText, state.user.username)
   }
 };
 
