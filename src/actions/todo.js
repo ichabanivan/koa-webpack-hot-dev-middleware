@@ -80,12 +80,11 @@ export function addNewTodo(text) {
   return async (dispatch, getState) => {
 
     let state = getState();
-    let isUnic = true,
-      id = Math.floor(Math.random() * 10000).toString();
+    let isUnic = true;
 
     // if empty
     if (!text) {
-      dispatch(push(`app/${ id }/error`));
+      dispatch(push(`app/0/error`));
       return false
     }
 
@@ -116,10 +115,10 @@ export function addNewTodo(text) {
         })
       } catch (error) {
         console.error('/addTodo - error')
-        dispatch(push(`app/${id}/error`));
+        dispatch(push(`/app/0/error`));
       }
     } else {
-      dispatch(push(`app/${id}/error`));
+      dispatch(push(`/app/0/error`));
     }
   };
 }
@@ -178,10 +177,10 @@ export function actionChangeStatus(_id, status) {
           todo: res.value
         });
       } else {
-        dispatch(push(`app/${_id}/error`));
+        dispatch(push(`/app/${_id}/error`));
       }
     } catch (error) {
-      dispatch(pushonClick(`app/${_id}/error`));
+      dispatch(pushonClick(`/app/${_id}/error`));
     }
   };
 }
@@ -189,7 +188,6 @@ export function actionChangeStatus(_id, status) {
 export function initTodos() {
   return async (dispatch, getState) => {
     let state = getState();
-    let id = Math.floor(Math.random() * 10000);
     try {
       let response = await fetch('/app/listTodos', {
         method: 'GET',
@@ -206,12 +204,12 @@ export function initTodos() {
           todos
         })
       } else {
-        dispatch(push(`app/${id}/error`));
+        dispatch(push(`/app/0/error`));
       }
       
     } catch (error) {
       console.error('/listTodos error')
-      dispatch(push(`app/${id}/error`));
+      dispatch(push(`/app/0/error`));
     }
   }
 }
@@ -240,12 +238,12 @@ export function accessEditing(access, _id) {
           todo: todo.value
         })
       } else {
-        // dispatch(push(`app/${id}/error`));
+        dispatch(push(`/app/0/error`));
       }
 
     } catch (error) {
       console.error('/requestEditing error')
-      // dispatch(push(`app/0/error`));
+      dispatch(push(`/app/0/error`));
     }
   }
 }
