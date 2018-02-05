@@ -169,7 +169,6 @@ controller.access = async ctx => {
     } else {
       let todo = await db.findOneTodo({ _id: id})
       let owner = todo.owner;
-      console.log(owner)
 
       ctx.body = await db.findAndUpdateTodo(id, {
         $set: {
