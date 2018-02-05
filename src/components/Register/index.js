@@ -27,7 +27,6 @@ class Register extends Component {
     const { reg } = this.props;
 
     if (this.state.username.length < 3) {
-      console.log(this.state.username)
       alert("Username is short")
     } else if (password1 !== password2) {
       alert("Passwords don't same")

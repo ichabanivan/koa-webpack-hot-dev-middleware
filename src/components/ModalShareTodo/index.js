@@ -14,7 +14,6 @@ class ModalShareTodo extends Component {
   agree = (e) => {
     e.preventDefault();
     const _id = this.props._id;
-    console.log(_id)
     this.props.hideModalAndShareTodo(_id, this.state.username);
   };
 
@@ -42,7 +41,7 @@ class ModalShareTodo extends Component {
               <div className="modal-content">
                 <h4> Do you want to share todo? </h4>
               </div>
-              <input placeholder="Username" onChange={this.handleChange}/>
+              <input className="username" placeholder="Username" onChange={this.handleChange}/>
               <div className="modal-footer">
                 <button
                   className="modal-action"

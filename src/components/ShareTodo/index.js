@@ -29,7 +29,6 @@ class ShareTodo extends Component {
       todo,
     } = this.props;
 
-    console.log(this.props)
 
     return <div>
       {todo._id}
@@ -38,13 +37,5 @@ class ShareTodo extends Component {
     </div>
   }
 }
-
-// const mapStateToProps = (state) => {
-//   return {
-//     todos: state.todos.filter((todo) => {
-//       return todo.request === state.user.username;
-//     })
-//   }
-// };
 
 export default connect(null, { accessEditing })(ShareTodo)

@@ -26,7 +26,6 @@ export const hideModals = () => {
 
 export function chooseModal(modal) {
   return (dispatch) => {
-    console.log(modal)
     if (modal === 'change-label') {
       dispatch(showModal(ACTIONS.MODAL_STATUS));
     } else if (modal === 'remove-todo') {
@@ -65,7 +64,6 @@ export const hideModalRemoveTodo = () => {
 
 export const hideModalAndShareTodo = (_id, username) => {
   return (dispatch) => {
-    console.log("hideModalAndShareTodo");
     dispatch(shareTodo(_id, username));
     dispatch(hideModals());
   }

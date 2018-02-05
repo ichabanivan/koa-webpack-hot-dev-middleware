@@ -10,9 +10,8 @@ export const newText = (text) => ({
 export const shareTodo = (_id, shareUsername) => {
   return async (dispatch, getState) => {
     let state = getState();
-    console.log("shareTodo");
     let todo = { _id, username: shareUsername, canEdit: '' };
-    console.log(todo)
+
     try {
       let response = await fetch('/app/shareTodo', {
         method: 'PUT',
@@ -24,8 +23,6 @@ export const shareTodo = (_id, shareUsername) => {
       })
 
       let res = await response.json();
-
-      console.log(res, 'shareTodo')
 
       if (response.ok) {
         dispatch({
@@ -47,16 +44,14 @@ export const shareTodo = (_id, shareUsername) => {
 export const updateTodo = (todo, _id, shareUsername) => {
   return async (dispatch, getState) => {
     let state = getState();
-    todo.share.push(shareUsername) // ?
-    console.log(todo)
+
     if (todo.body) {
       try {
         let response = await fetch('/app/updateTodo', {
           method: 'PUT',
           body: JSON.stringify(todo),
           headers: new Headers({
-            'authorization': `Bearer ${state.user.authorization}`,
-            '_id': state.user._id // -
+            'authorization': `Bearer ${state.user.authorization}`
           })
         })
 
@@ -69,14 +64,14 @@ export const updateTodo = (todo, _id, shareUsername) => {
           });
           dispatch(push(`/app/`))
         } else {
-          dispatch(push(`/app/${_id}/error`));
+          dispatch(push(`/app/${res.value._id}/error`));
         }
       } catch (error) {
         console.error('/updateTodo - error')
-        dispatch(push(`/app/${_id}/error`));
+        dispatch(push(`/app/${res.value._id}/error`));
       }
     } else {
-      dispatch(push(`/app/${_id}/error`));
+      dispatch(push(`/app/${res.value._id}/error`));
     }
   }
 };
@@ -136,8 +131,7 @@ export function actionRemoveTodo(_id) {
       let response = await fetch(`/app/${_id}`, {
         method: 'DELETE',
         headers: new Headers({
-          'authorization': `Bearer ${state.user.authorization}`,
-          '_id': state.user._id
+          'authorization': `Bearer ${state.user.authorization}`
         })
       })
       let res = await response.json()
@@ -187,7 +181,7 @@ export function actionChangeStatus(_id, status) {
         dispatch(push(`app/${_id}/error`));
       }
     } catch (error) {
-      dispatch(push(`app/${_id}/error`));
+      dispatch(pushonClick(`app/${_id}/error`));
     }
   };
 }
@@ -200,8 +194,7 @@ export function initTodos() {
       let response = await fetch('/app/listTodos', {
         method: 'GET',
         headers: new Headers({
-          'authorization': `Bearer ${state.user.authorization}`,
-          '_id': state.user._id
+          'authorization': `Bearer ${state.user.authorization}`
         })
       });
 
@@ -240,7 +233,6 @@ export function accessEditing(access, _id) {
       });
 
       let todo = await response.json()
-      console.log(todo)
 
       if (todo.ok) {
         dispatch({
@@ -253,7 +245,20 @@ export function accessEditing(access, _id) {
 
     } catch (error) {
       console.error('/requestEditing error')
-      // dispatch(push(`app/000000/error`));
+      // dispatch(push(`app/0/error`));
+    }
+  }
+}
+
+export function editTodo(link, todo) {
+  return async (dispatch, getState) => {
+    let state = getState();
+    let username = state.user.username;
+    if (todo.canEdit === username) {
+      dispatch(push(link))
+    } else {
+      console.error('/requestEditing error')
+      dispatch(push(`/app/${todo._id}/error`));
     }
   }
 }

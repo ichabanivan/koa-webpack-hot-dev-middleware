@@ -1,5 +1,6 @@
 import { ObjectId } from 'mongodb';
 import jwt from 'jsonwebtoken';
+import { Base64 } from 'js-base64';
 
 import config from '../config';
 import db from '../db/db';
@@ -25,34 +26,9 @@ controller.verify = async (ctx, next) => {
   }
 }
 
-controller.canEdit = async (ctx, next) => {
-  console.log(ctx.header)
-  console.log(ctx.body)
-  // let { authorization } = ctx.request.header;
-
-  // if (authorization) {
-  //   let token = authorization.split(' ')[1];
-  //   try {
-  //     ctx.user = jwt.verify(token, config.privateKey)
-      await next()
-  //   } catch (error) {
-  //     console.log(error)
-  //     ctx.message = "Error - cannot verify user data";
-  //     console.log("Error - cannot verify user data");
-  //   }
-  // } else {
-  //   ctx.message = 'User does not have a token';
-  //   console.log('User does not have a token');
-  // }
-}
-
 controller.signup = async (ctx) => {
   let request = JSON.parse(ctx.request.body)
-  let user = {
-    username: request.username,
-    password: request.password
-  }
-  // let token = jwt.sign(user, config.privateKey, { expiresIn: '1h' });
+  let password = Base64.encode(request.password)
 
   let userData = await db.findOneUser({ username: request.username })
 
@@ -60,11 +36,11 @@ controller.signup = async (ctx) => {
   if (!userData) {
     let result = await db.addUser({
       username: request.username,
-      password: request.password
+      password
     })
 
     let token = jwt.sign({
-      username: request.name,
+      username: request.username,
       id: result._id
     }, config.privateKey)
 
@@ -80,8 +56,8 @@ controller.signup = async (ctx) => {
 
 controller.signin = async (ctx) => {
   let request = JSON.parse(ctx.request.body)
-
-  let user = await db.findOneUser({ username: request.username, password: request.password })
+  let password = Base64.encode(request.password)
+  let user = await db.findOneUser({ username: request.username, password })
 
   if (user) {
     let tokenForUser = jwt.sign({
@@ -100,7 +76,6 @@ controller.signin = async (ctx) => {
 
 controller.listTodos = async (ctx) => {
   try {
-    // Принимает пользователя по которому искать
     let response = await db.findAllTodos({
       "share": ctx.user.username
     })
@@ -118,7 +93,7 @@ controller.addTodo = async (ctx) => {
     let body = await JSON.parse(ctx.request.body);
 
     body.share = [ctx.user.username]
-    console.log(body.share)
+    body.canEdit = ctx.user.username;
 
     let todoFromDB = await db.findOneTodo({ body: body.body })
 
@@ -196,7 +171,6 @@ controller.access = async ctx => {
       })
     }
 
-    console.log(ctx.body)
   } catch (error) {
     ctx.message = error;
   }

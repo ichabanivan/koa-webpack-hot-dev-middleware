@@ -35,15 +35,15 @@ const filterTodos = (todos, filter, text, username) => {
   switch (filter) {
     case CONSTANTS.FILTER_ALL:
       return todos.filter((todo) => {
-        return todo.body.indexOf(text) !== -1 && todo.canEdit === username;
+        return todo.body.indexOf(text) !== -1 && todo.request !== username;
       });
     case CONSTANTS.FILTER_COMPLETED:
       return todos.filter((todo) => {
-        return todo.status === 'completed' && todo.body.indexOf(text) !== -1;
+        return todo.status === 'completed' && todo.body.indexOf(text) !== -1 && todo.request !== username;
       });
     case CONSTANTS.FILTER_ACTIVE:
       return todos.filter((todo) => {
-        return (todo.status === 'new' || todo.status === 'in progress') && todo.body.indexOf(text) !== -1;
+        return (todo.status === 'new' || todo.status === 'in progress') && todo.body.indexOf(text) !== -1 && todo.request !== username;
       });
     default: {
       break;

@@ -11,7 +11,7 @@ export const login = (user) => {
       })
       let res = await response.json()
       
-      localStorage.setItem('TodoUser', JSON.stringify(res));
+      localStorage.setItem('user', JSON.stringify(res));
 
       dispatch({
         type: ACTIONS.USER,
@@ -32,6 +32,9 @@ export const reg = (user) => {
         body: JSON.stringify(user)
       })
       let res = await response.json()
+
+      localStorage.setItem('user', JSON.stringify(res));
+
       dispatch({
         type: ACTIONS.USER,
         user: res

@@ -9,11 +9,9 @@ class ShareTodos extends Component {
     const {
       todos,
     } = this.props;
-console.log(todos)
 
     if (todos.length) {
       return todos.map((todo, index) => {
-        console.log(todo)
         return <ShareTodo key={index} todo={todo} />
       })
     } else {

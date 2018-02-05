@@ -1,6 +1,6 @@
 import CONSTANTS from '../constants/';
 
-let user = JSON.parse(localStorage.getItem("TodoUser"));
+let user = JSON.parse(localStorage.getItem("user")) || {};
 
 export default function user(state = user, action) {
   switch (action.type) {
