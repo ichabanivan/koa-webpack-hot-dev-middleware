@@ -10,7 +10,7 @@ import { initUsers } from '../../actions/users';
 class ModalShareTodo extends Component {
 
   state = {
-    userId: this.props.userId
+    userId: ''
   }
 
   componentDidMount = () => {
@@ -36,6 +36,7 @@ class ModalShareTodo extends Component {
   };
 
   handleChange = (e) => {
+    console.log(e.target.value)
     this.setState({
       userId: e.target.value
     })
@@ -52,7 +53,8 @@ class ModalShareTodo extends Component {
               <div className="modal-content">
                 <h4> Do you want to share todo? </h4>
               </div>
-              <select className="username" onChange={this.handleChange}>
+              <select defaultValue={122} className="username" onChange={this.handleChange} defaultValue="Choose user">
+                <option value="">Chose user</option>
                 {
                   users.map((user, index) => {
                     return <option key={index} value={user._id}>{user.username}</option>
@@ -67,6 +69,7 @@ class ModalShareTodo extends Component {
                 <button
                   className="modal-action"
                   onClick={ this.agree }
+                  disabled={this.state.userId ? false : true}
                 > Agree </button>
               </div>
             </form>

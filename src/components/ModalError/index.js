@@ -16,7 +16,7 @@ class ModalError extends Component {
   };
 
   render() {
-    const { isVisible } = this.props;
+    const { isVisible, error } = this.props;
 
     if (isVisible) {
       return (
@@ -24,7 +24,7 @@ class ModalError extends Component {
           <div className="modal-overlay" onClick={ this.handleHide }>
             <form className="modal" onClick={ this.stopPropagation }>
               <div className="modal-content">
-                <h4> Error </h4>
+                <h4> {error} </h4>
               </div>
               <div className="modal-footer">
                 <button
@@ -44,7 +44,8 @@ class ModalError extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    isVisible: state.modals[CONSTANTS.MODAL_ERROR].isVisible
+    isVisible: state.modals[CONSTANTS.MODAL_ERROR].isVisible,
+    error: state.modals[CONSTANTS.MODAL_ERROR].error
   }
 };
 

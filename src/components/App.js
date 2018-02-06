@@ -16,7 +16,10 @@ class App extends Component {
 
   componentDidMount = () => {
     const { push, user } = this.props;
-    if (!user.username) push('/login')
+    if (!user.username) {
+      console.log('!user.username')
+      push('/login')
+    }
   }
   
   render() {

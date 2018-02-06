@@ -80,8 +80,6 @@ controller.listTodos = async (ctx) => {
       "share": ctx.user._id
     })
     ctx.body = JSON.stringify(response)
-
-    console.log(ctx.body)
   } catch (error) {
     ctx.message = error;
     console.log(error);
@@ -103,8 +101,6 @@ controller.addTodo = async (ctx) => {
       body: body.body,
       share: user._id
     })
-
-    console.log(todoFromDB, 'todoFromDB')
 
     if (todoFromDB) {
       let body = await JSON.parse(ctx.request.body);
@@ -155,6 +151,8 @@ controller.updateTodo = async (ctx) => {
 controller.shareTodo = async ctx => {
   try {
     let req = JSON.parse(ctx.request.body);
+    console.log(req)
+
 
     ctx.body = await db.share(req._id, req.shareUserId)
   } catch (error) {

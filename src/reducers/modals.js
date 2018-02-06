@@ -21,7 +21,8 @@ export default function modals(state = initialState, action) {
       return {
         ...initialState,
         [CONSTANTS.MODAL_ERROR]: {
-          isVisible: true
+          isVisible: true,
+          error: action.payload.error || state[CONSTANTS.MODAL_ERROR].error
         }
       };
 
@@ -50,7 +51,13 @@ export default function modals(state = initialState, action) {
       };
 
     case CONSTANTS.HIDE_MODALS:
-      return initialState;
+      return {
+        ...initialState,
+        [CONSTANTS.MODAL_ERROR]: {
+          isVisible: false,
+          error: state[CONSTANTS.MODAL_ERROR].error
+        }
+      };
 
     default:
       return state;

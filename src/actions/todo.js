@@ -1,6 +1,9 @@
 import ACTIONS from '../constants/';
 
 import { push } from 'react-router-redux'
+import { showModalError } from './modal'
+
+import api from './fetch';
 
 export const newText = (text) => ({
   type: ACTIONS.NEW_TEXT,
@@ -17,66 +20,58 @@ export const shareTodo = (_id, shareUserId) => {
     };
 
     try {
-      let response = await fetch('/app/shareTodo', {
+      let res = await api({
+        url: '/app/shareTodo',
         method: 'PUT',
-        body: JSON.stringify(todo),
-        headers: new Headers({
-          'authorization': `Bearer ${state.user.authorization}`,
-          _id
-        })
-      })
+        body: todo,
+        _id
+      }, state)
 
-      let res = await response.json();
-
-      if (response.ok) {
+      if (res.ok) {
         dispatch({
           type: ACTIONS.UPDATE_TODO,
           todo: res.value
         });
         dispatch(push(`/app/`))
       } else {
-        dispatch(push(`/app/${_id}/error`));
+        dispatch(showModalError(`response ok not true`, _id));
       }
     } catch (error) {
       console.error('/shareTodo - error')
-      dispatch(push(`/app/${_id}/error`));
+      dispatch(showModalError(error, _id));
     }
   }
 };
 
 
 export const updateTodo = (todo, _id, shareUsername) => {
-  _id
   return async (dispatch, getState) => {
     let state = getState();
 
     if (todo.body) {
       try {
-        let response = await fetch('/app/updateTodo', {
+        let res = await api({
+          url: '/app/updateTodo',
           method: 'PUT',
-          body: JSON.stringify(todo),
-          headers: new Headers({
-            'authorization': `Bearer ${state.user.authorization}`
-          })
-        })
+          body: todo,
+          _id
+        }, state) 
 
-        let res = await response.json();
-
-        if (response.ok) {
+        if (res.ok) {
           dispatch({
             type: ACTIONS.UPDATE_TODO,
             todo: res.value
           });
           dispatch(push(`/app/`))
         } else {
-          dispatch(push(`/app/${res.value._id}/error`));
+          dispatch(showModalError(`response ok not true`, res.value._id));
         }
       } catch (error) {
         console.error('/updateTodo - error')
-        dispatch(push(`/app/${res.value._id}/error`));
+        dispatch(showModalError(error, res.value._id));
       }
     } else {
-      dispatch(push(`/app/${res.value._id}/error`));
+      dispatch(showModalError(`todo body is empty`, res.value._id));
     }
   }
 };
@@ -89,7 +84,7 @@ export function addNewTodo(text) {
 
     // if empty
     if (!text) {
-      dispatch(push(`app/0/error`));
+      dispatch(showModalError(`text is empty`, 0));
       return false
     }
 
@@ -103,15 +98,11 @@ export function addNewTodo(text) {
 
     if (isUnic) {
       try {
-        let response = await fetch('/app/addTodo', {
+        let res = await api({
+          url: '/app/addTodo',
           method: 'POST',
-          body: JSON.stringify(todo),
-          headers: new Headers({
-            'authorization': `Bearer ${state.user.authorization}`
-          })
-        })
-
-        let res = await response.json()
+          body: todo
+        }, state) 
 
         dispatch({
           type: ACTIONS.ADD_TODO,
@@ -122,10 +113,10 @@ export function addNewTodo(text) {
         })
       } catch (error) {
         console.error('/addTodo - error')
-        dispatch(push(`/app/0/error`));
+        dispatch(showModalError(error, 0));
       }
     } else {
-      dispatch(push(`/app/0/error`));
+      dispatch(showModalError(`Not unic value`, 0));
     }
   };
 }
@@ -133,14 +124,13 @@ export function addNewTodo(text) {
 export function actionRemoveTodo(_id) {
   return async (dispatch, getState) => {
     let state = getState();
+
     try {
-      let response = await fetch(`/app/${_id}`, {
+      let res = await api({
+        url: `/app/${_id}`,
         method: 'DELETE',
-        headers: new Headers({
-          'authorization': `Bearer ${state.user.authorization}`
-        })
-      })
-      let res = await response.json()
+        _id
+      }, state) 
 
       if (res.ok) {
         dispatch({
@@ -152,11 +142,11 @@ export function actionRemoveTodo(_id) {
         });
         dispatch(push('/app/'));
       } else {
-        dispatch(push(`/app/${_id}/error`));
+        dispatch(showModalError(`response ok - not true`, _id));
       }
     } catch (error) {
-      console.error('Response was not received')
-      dispatch(push(`/app/${_id}/error`));
+      console.error(error)
+      dispatch(showModalError(error, _id));
     }
   }
 }
@@ -168,15 +158,12 @@ export function actionChangeStatus(_id, status) {
     todo.status = status;
 
     try {
-      let response = await fetch('/app/updateTodo', {
+      let res = await api({
+        url: '/app/updateTodo',
         method: 'PUT',
-        body: JSON.stringify(todo),
-        headers: new Headers({
-          'authorization': `Bearer ${state.user.authorization}`
-        })
-      })
-
-      let res = await response.json()
+        body: todo,
+        _id
+      }, state) 
 
       if (res.ok) {
         dispatch({
@@ -184,10 +171,10 @@ export function actionChangeStatus(_id, status) {
           todo: res.value
         });
       } else {
-        dispatch(push(`/app/${_id}/error`));
+        dispatch(showModalError('response ok not true', _id));
       }
     } catch (error) {
-      dispatch(pushonClick(`/app/${_id}/error`));
+      dispatch(showModalError(error, _id));
     }
   };
 }
@@ -196,14 +183,10 @@ export function initTodos() {
   return async (dispatch, getState) => {
     let state = getState();
     try {
-      let response = await fetch('/app/listTodos', {
-        method: 'GET',
-        headers: new Headers({
-          'authorization': `Bearer ${state.user.authorization}`
-        })
-      });
-
-      let todos = await response.json()
+      let todos = await api({
+        url: '/app/listTodos',
+        method: 'GET'
+      }, state) 
 
       if (todos) {
         dispatch({
@@ -216,7 +199,7 @@ export function initTodos() {
       
     } catch (error) {
       console.error('/listTodos error')
-      dispatch(push(`/app/0/error`));
+      dispatch(showModalError(error, 0));
     }
   }
 }
@@ -226,18 +209,15 @@ export function accessEditing(access, _id) {
     let state = getState();
 
     try {
-      let response = await fetch('/app/access', {
+      let todo = await api({
+        url: '/app/access',
         method: 'POST',
-        headers: new Headers({
-          'authorization': `Bearer ${state.user.authorization}`
-        }),
-        body: JSON.stringify({
+        body: {
           _id,
           access
-        })
-      });
-
-      let todo = await response.json()
+        },
+        _id
+      }, state) 
 
       if (todo.ok) {
         dispatch({
@@ -246,11 +226,12 @@ export function accessEditing(access, _id) {
         })
       } else {
         dispatch(push(`/app/${_id}/error`));
+        dispatch(showModalError(`/app/${_id}/error`, _id));
       }
 
     } catch (error) {
       console.error('/requestEditing error')
-      dispatch(push(`/app/${_id}/error`));
+      dispatch(showModalError(error, _id));
     }
   }
 }
@@ -260,12 +241,11 @@ export function editTodo(link, todo) {
     let state = getState();
     let userId = state.user._id;
 
-    console.log(todo.canEdit, userId)
     if (todo.canEdit === userId) {
       dispatch(push(link))
     } else {
       console.error('/requestEditing error')
-      dispatch(push(`/app/${todo._id}/error`));
+      dispatch(showModalError('You cannot edit',todo._id));
     }
   }
 }
