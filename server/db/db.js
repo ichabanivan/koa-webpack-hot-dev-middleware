@@ -54,12 +54,10 @@ database.deleteTodo = async (_id) => {
 database.share = async (_id, userId) => {
   const id = new ObjectId(_id);
   return await database.mongo.collection("todos").findOneAndUpdate({ _id: id }, {
-    $addToSet: {
-      share: userId,
-    },
     $set: {
       request: userId,
-      canEdit: ""
+      canEdit: "",
+      share: userId,
     }
   }, {
     returnOriginal: false
