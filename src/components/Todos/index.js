@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { chooseModal } from '../../actions/modal';
+import { exit } from '../../actions/auth'
 
 import Input from '../Input/';
 import TodoList from '../TodoList/';
@@ -13,6 +14,8 @@ import ModalError from '../ModalError/';
 import ModalRemoveTodo from '../ModalRemoveTodo/';
 import ModalShareTodo from '../ModalShareTodo/';
 import ModalChangeStatus from '../ModalChangeStatus/';
+
+import './index.css';
 
 class Todos extends Component {
   state = {
@@ -58,6 +61,7 @@ class Todos extends Component {
 
     return (
       <div>
+        <span className="exit" onClick={this.props.exit}>Exit</span>
         <ShareTodos />
         
         <Input _id={id} />
@@ -73,4 +77,4 @@ class Todos extends Component {
   }
 }
 
-export default connect(null, { chooseModal })(Todos)
+export default connect(null, { chooseModal, exit })(Todos)
