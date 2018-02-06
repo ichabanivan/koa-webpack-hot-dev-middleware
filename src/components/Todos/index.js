@@ -61,7 +61,7 @@ class Todos extends Component {
 
     return (
       <div>
-        <span className="exit" onClick={this.props.exit}>Exit</span>
+        <div className="exit"><span onClick={this.props.exit}>Exit</span></div>
         <ShareTodos />
         
         <Input _id={id} />

@@ -57,7 +57,7 @@ controller.signin = async (ctx) => {
   let request = ctx.request.body
   let password = Base64.encode(request.password)
   let user = await db.findOneUser({ username: request.username, password })
-console.log(user, 'user')
+
   if (user) {
     let tokenForUser = jwt.sign({
       username: user.username,

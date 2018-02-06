@@ -14,7 +14,8 @@ class TodoItem extends Component {
       isActive,
       editTodo,
       user,
-      assigned
+      assigned,
+      request
     } = this.props;
 
     let activeClass = isActive ? 'item--active': '';
@@ -48,7 +49,7 @@ class TodoItem extends Component {
 
           <div>
             <div>Owner: <strong>{ user.username }</strong></div>
-            <div>Assigned to: <strong>{assigned.username }</strong></div>
+            <div>Assigned to: <strong>{assigned ? assigned.username : request.username }</strong></div>
             <div>Created: { new Date(todo.created).toLocaleDateString() } </div>
             <div>Мodified: { new Date(todo.modified).toLocaleDateString() }</div>
           </div>
@@ -68,6 +69,9 @@ const mapStateToProps = (state, ownProps) => {
     assigned: state.users.filter((user) => {
       return ownProps.todo.canEdit === user._id
     })[0],
+    request: state.users.filter((user) => {
+      return ownProps.todo.request === user._id
+    })[0]
   }
 }
 
