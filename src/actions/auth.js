@@ -2,18 +2,16 @@ import ACTIONS from '../constants/';
 
 import { push } from 'react-router-redux'
 import { showModalError } from './modal';
+import account from './account'
 
 export const login = (user) => {
   return async dispatch => {
     try {
-      let response = await fetch('/signIn', {
+      let res = await account({
+        url: '/signIn',
         method: 'POST',
-        headers: new Headers({
-          'Content-type': 'application/json'
-        }),
         body: JSON.stringify(user)
       })
-      let res = await response.json()
       
       localStorage.setItem('user', JSON.stringify(res));
       
@@ -36,16 +34,11 @@ export const login = (user) => {
 export const reg = (user) => {
   return async dispatch => {
     try {
-      let response = await fetch('/signUp', {
+      let res = await account({
+        url: '/signUp',
         method: 'POST',
-        headers: new Headers({
-          'Content-type': 'application/json'
-        }),
         body: JSON.stringify(user)
       })
-
-      let res = await response.json()
-      console.log(res)
 
       localStorage.setItem('user', JSON.stringify(res));
 
