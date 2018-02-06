@@ -57,7 +57,6 @@ class TodoItem extends Component {
     } else {
       return null
     }
-    
   }
 }
 
