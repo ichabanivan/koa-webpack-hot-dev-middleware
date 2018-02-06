@@ -39,9 +39,9 @@ controller.signup = async (ctx) => {
     })
 
     let token = jwt.sign({
-      username: request.username,
-      id: result._id
-    }, config.privateKey, { expiresIn: '1h' })
+      username: result.ops[0].username,
+      _id: result.ops[0]._id,
+    }, config.privateKey/*, { expiresIn: '1h' }*/)
 
     ctx.body = JSON.stringify({
       _id: result.ops[0]._id,
@@ -57,12 +57,12 @@ controller.signin = async (ctx) => {
   let request = JSON.parse(ctx.request.body)
   let password = Base64.encode(request.password)
   let user = await db.findOneUser({ username: request.username, password })
-  console.log(request)
+
   if (user) {
     let tokenForUser = jwt.sign({
       username: user.username,
       _id: user._id,
-    }, config.privateKey, { expiresIn: '1h' })
+    }, config.privateKey/*, { expiresIn: '1h' }*/)
 
     ctx.body = JSON.stringify({
       _id: user._id,
@@ -93,16 +93,18 @@ controller.addTodo = async (ctx) => {
     let date = new Date().toLocaleDateString();
 
     let body = await JSON.parse(ctx.request.body);
-    let userId = ctx.user._id;
+    let user = ctx.user;
 
-    body.share = [userId]
-    body.canEdit = userId;
+    body.share = [user._id]
+    body.canEdit = user._id;
     body.request = '';
 
     let todoFromDB = await db.findOneTodo({ 
       body: body.body,
-      share: userId
+      share: user._id
     })
+
+    console.log(todoFromDB, 'todoFromDB')
 
     if (todoFromDB) {
       let body = await JSON.parse(ctx.request.body);
@@ -154,8 +156,7 @@ controller.shareTodo = async ctx => {
   try {
     let req = JSON.parse(ctx.request.body);
 
-    console.log(req)
-    ctx.body = await db.share(req._id, req.username)
+    ctx.body = await db.share(req._id, req.shareUserId)
   } catch (error) {
     ctx.message = error;
   }
@@ -165,26 +166,26 @@ controller.access = async ctx => {
   try {
     let req = JSON.parse(ctx.request.body);
 
-    let username = ctx.user.username;
-    console.log(ctx.user._id)
+    let userId = ctx.user._id;
+
     if (req.access) {
       ctx.body = await db.findAndUpdateTodo(req._id, {
         $set: {
           canEdit: ctx.user._id,
-          request: null
+          request: ''
         }
       })
     } else {
-      let todo = await db.findOneTodo({ _id: req._id})
+      let todo = await db.findOneTodoById(req._id)
       let owner = todo.owner;
 
       ctx.body = await db.findAndUpdateTodo(req._id, {
         $set: {
           canEdit: owner, // id owner
-          request: null
+          request: ''
         },
         $pull: {
-          share: username === owner ? null : username
+          share: userId === owner ? '' : userId
         }
       })
     }

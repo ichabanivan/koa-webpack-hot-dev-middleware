@@ -20,8 +20,19 @@ database.findAllTodos = async (req) => {
   return await database.mongo.collection('todos').find(req).toArray()
 }
 
+database.findOneTodoById = async (_id) => {
+  const id = new ObjectId(_id);
+  return await database.mongo.collection('todos').findOne({
+    _id: id
+  })
+}
+
 database.findOneTodo = async (todo) => {
-  return await database.mongo.collection('todos').findOne(todo)
+  const id = new ObjectId(todo.share);
+  return await database.mongo.collection('todos').findOne({
+    body: todo.body,
+    share: id
+  })
 }
 
 database.addTodo = async (todo) => {

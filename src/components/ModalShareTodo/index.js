@@ -10,7 +10,7 @@ import { initUsers } from '../../actions/users';
 class ModalShareTodo extends Component {
 
   state = {
-    userId: null
+    userId: this.props.userId
   }
 
   componentDidMount = () => {
@@ -82,7 +82,8 @@ class ModalShareTodo extends Component {
 const mapStateToProps = (state) => {
   return {
     isVisible: state.modals[CONSTANTS.MODAL_SHARE].isVisible,
-    users: state.users
+    users: state.users,
+    userId: state.user._id
   }
 };
 

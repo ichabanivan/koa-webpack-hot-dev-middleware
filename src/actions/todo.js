@@ -7,16 +7,14 @@ export const newText = (text) => ({
   text
 });
 
-export const shareTodo = (_id, shareUserID) => {
+export const shareTodo = (_id, shareUserId) => {
   return async (dispatch, getState) => {
     let state = getState();
 
     let todo = { 
       _id, 
-      shareUserID 
+      shareUserId
     };
-
-    console.log(todo)
 
     try {
       let response = await fetch('/app/shareTodo', {
