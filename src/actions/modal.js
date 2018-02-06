@@ -42,7 +42,6 @@ export const hideModals = () => {
 
 export function chooseModal(modal) {
   console.log('chooseModal')
-  console.log(modal)
   return (dispatch, getState) => {
     let state = getState();
     if (modal === 'change-label') {
@@ -50,8 +49,6 @@ export function chooseModal(modal) {
     } else if (modal === 'remove-todo') {
       dispatch(showModal(ACTIONS.MODAL_REMOVE));
     } else if (modal === 'error') {
-      // console.log('error')
-      // dispatch(showModalError('Error', 0))
       dispatch(showModal(ACTIONS.MODAL_ERROR));
     } else if (modal === 'share') {
       dispatch(showModal(ACTIONS.MODAL_SHARE));

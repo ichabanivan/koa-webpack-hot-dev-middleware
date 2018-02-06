@@ -25,7 +25,6 @@ class ModalShareTodo extends Component {
   agree = (e) => {
     e.preventDefault();
     const todoId = this.props._id;
-    console.log(todoId, this.state.userId)
     this.props.hideModalAndShareTodo(todoId, this.state.userId);
   };
 
@@ -36,7 +35,6 @@ class ModalShareTodo extends Component {
   };
 
   handleChange = (e) => {
-    console.log(e.target.value)
     this.setState({
       userId: e.target.value
     })

@@ -170,15 +170,15 @@ controller.access = async ctx => {
       })
     } else {
       let todo = await db.findOneTodoById(req._id)
-      let owner = todo.owner;
+      let ownerId = todo.owner;
 
       ctx.body = await db.findAndUpdateTodo(req._id, {
         $set: {
-          canEdit: owner, // id owner
+          canEdit: ownerId,
           request: ''
         },
         $pull: {
-          share: userId === owner ? '' : userId
+          share: userId === ownerId ? '' : userId
         }
       })
     }
