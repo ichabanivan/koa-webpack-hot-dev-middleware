@@ -33,6 +33,7 @@ class Register extends Component {
     } else if (password1.length < 3) {
       alert("Password is short")
     } else {
+      console.log(username)
       reg({
         username,
         password: password1

@@ -1,7 +1,6 @@
 import ACTIONS from '../constants/';
 
 import { push } from 'react-router-redux'
-
 import api from './fetch';
 
 export const initUsers = (user) => {

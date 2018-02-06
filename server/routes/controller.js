@@ -41,7 +41,7 @@ controller.signup = async (ctx) => {
     let token = jwt.sign({
       username: result.ops[0].username,
       _id: result.ops[0]._id,
-    }, config.privateKey/*, { expiresIn: '1h' }*/)
+    }, config.privateKey)
 
     ctx.body = JSON.stringify({
       _id: result.ops[0]._id,
@@ -57,16 +57,16 @@ controller.signin = async (ctx) => {
   let request = ctx.request.body
   let password = Base64.encode(request.password)
   let user = await db.findOneUser({ username: request.username, password })
-
+console.log(user, 'user')
   if (user) {
     let tokenForUser = jwt.sign({
       username: user.username,
       _id: user._id,
-    }, config.privateKey/*, { expiresIn: '1h' }*/)
+    }, config.privateKey)
 
     ctx.body = JSON.stringify({
       _id: user._id,
-      username: user.username,
+      username: request.username,
       authorization: tokenForUser
     })
   } else {

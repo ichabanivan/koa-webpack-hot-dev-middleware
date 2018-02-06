@@ -11,7 +11,6 @@ import {
 import { get } from 'http';
 
 export const showModal = (type) => {
-  console.log('showModal')
   return {
     type: type,
     payload: {
@@ -21,7 +20,6 @@ export const showModal = (type) => {
 };
 
 export const showModalError = (error, id) => {
-  console.log('modal error')
   return (dispatch) => {
     dispatch(push(`/app/${id}/error`))
     dispatch({
@@ -41,7 +39,6 @@ export const hideModals = () => {
 };
 
 export function chooseModal(modal) {
-  console.log('chooseModal')
   return (dispatch, getState) => {
     let state = getState();
     if (modal === 'change-label') {
@@ -53,7 +50,6 @@ export function chooseModal(modal) {
     } else if (modal === 'share') {
       dispatch(showModal(ACTIONS.MODAL_SHARE));
     } else {
-      console.log('hide')
       dispatch(hideModals());
     }
   };
