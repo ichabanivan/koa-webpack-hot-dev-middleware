@@ -16,6 +16,7 @@ const RESET_TEXT = 'RESET_TEXT';
 const INIT_TODOS = 'INIT_TODOS';
 const USER = 'USER';
 const USERS_INIT = 'USERS_INIT';
+const EXIT = 'EXIT';
 
 
 export default {
@@ -36,5 +37,6 @@ export default {
   RESET_TEXT,
   USER,
   MODAL_SHARE,
-  USERS_INIT
+  USERS_INIT,
+  EXIT
 };
