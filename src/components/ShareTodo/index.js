@@ -33,9 +33,9 @@ class ShareTodo extends Component {
 
 
     return <div className="share">
-      Todo: {todo.body}
       <button className="share__agree" onClick={this.accessTrue}>+</button>
       <button className="share__disagree" onClick={this.accessFalse}>-</button>
+      Todo: {todo.body}
     </div>
   }
 }

@@ -4,13 +4,13 @@
 }
 
 .share__disagree {
-  margin-left: 20px;
+  margin-right: 20px;
   background-color: rgba(255, 0, 0, 0.521);
   cursor: pointer;
 }
 
 .share__agree {
-  margin-left: 20px;
+  margin-right: 20px;
   background-color: rgba(0, 128, 0, 0.384);
   cursor: pointer;  
 }

@@ -194,7 +194,7 @@ export function initTodos() {
           todos
         })
       } else {
-        dispatch(push(`/app/0/error`));
+        dispatch(showModalError(error, 0));
       }
       
     } catch (error) {
