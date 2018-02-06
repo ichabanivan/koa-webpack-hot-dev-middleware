@@ -21,8 +21,6 @@ class ShareTodo extends Component {
       accessEditing,
       todo
     } = this.props;
-
-    console.log(todo)
     
     e.preventDefault()
     accessEditing(false, todo._id)

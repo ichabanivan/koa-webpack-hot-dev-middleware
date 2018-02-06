@@ -4,6 +4,7 @@ async function api(obj, state) {
     body: JSON.stringify(obj.body),
     headers: new Headers({
       'authorization': `Bearer ${state.user.authorization}`,
+      'Content-type': 'application/json',
       _id: obj._id || null
     })
   })

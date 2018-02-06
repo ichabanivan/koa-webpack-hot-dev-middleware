@@ -26,7 +26,7 @@ controller.verify = async (ctx, next) => {
 }
 
 controller.signup = async (ctx) => {
-  let request = JSON.parse(ctx.request.body)
+  let request = ctx.request.body
   let password = Base64.encode(request.password)
 
   let userData = await db.findOneUser({ username: request.username })
@@ -54,7 +54,7 @@ controller.signup = async (ctx) => {
 }
 
 controller.signin = async (ctx) => {
-  let request = JSON.parse(ctx.request.body)
+  let request = ctx.request.body
   let password = Base64.encode(request.password)
   let user = await db.findOneUser({ username: request.username, password })
 
@@ -88,7 +88,7 @@ controller.listTodos = async (ctx) => {
 
 controller.addTodo = async (ctx) => {
   try {
-    let body = await JSON.parse(ctx.request.body);
+    let body = ctx.request.body;
     let user = ctx.user;
 
     body.share = [user._id]
@@ -101,7 +101,7 @@ controller.addTodo = async (ctx) => {
     })
 
     if (todoFromDB) {
-      let body = await JSON.parse(ctx.request.body);
+      let body = ctx.request.body;
       let userId = ctx.user._id;
       console.log('You have same todo')
       ctx.message = 'You have same todo';
@@ -126,9 +126,8 @@ controller.addTodo = async (ctx) => {
 
 controller.updateTodo = async (ctx) => {
   try {
-    let body = await JSON.parse(ctx.request.body);
     let userId = ctx.user._id;
-    let todo = JSON.parse(ctx.request.body);
+    let todo = ctx.request.body;
 
     ctx.body = await db.findAndUpdateTodo(todo._id, {
       $set: { 
@@ -148,9 +147,7 @@ controller.updateTodo = async (ctx) => {
 
 controller.shareTodo = async ctx => {
   try {
-    let req = JSON.parse(ctx.request.body);
-    console.log(req)
-
+    let req = ctx.request.body;
 
     ctx.body = await db.share(req._id, req.shareUserId)
   } catch (error) {
@@ -160,7 +157,7 @@ controller.shareTodo = async ctx => {
 
 controller.access = async ctx => {
   try {
-    let req = JSON.parse(ctx.request.body);
+    let req = ctx.request.body;
 
     let userId = ctx.user._id;
 
@@ -215,7 +212,7 @@ controller.findAllUsers = async (ctx) => {
 }
 
 controller.findOneUserById = async (ctx) => {
-  let body = await JSON.parse(ctx.request.body);
+  let body = ctx.request.body;
   let userId = body._id;
   try {
     let response = await db.findOneUser()
