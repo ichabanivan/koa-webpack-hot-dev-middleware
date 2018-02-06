@@ -77,13 +77,18 @@ controller.signin = async (ctx) => {
 controller.listTodos = async (ctx) => {
   try {
     let response = await db.findAllTodos({
-      "share": ctx.user._id
+      $or: [{ 
+          share: ctx.user._id 
+        }, 
+        { 
+          owner: ctx.user._id 
+        }]
     })
     ctx.body = JSON.stringify(response)
   } catch (error) {
     ctx.message = error;
     console.log(error);
-  }  
+  }
 }
 
 controller.addTodo = async (ctx) => {
@@ -91,11 +96,11 @@ controller.addTodo = async (ctx) => {
     let body = ctx.request.body;
     let user = ctx.user;
 
-    body.share = [user._id]
+    body.share = user._id
     body.canEdit = user._id;
     body.request = '';
 
-    let todoFromDB = await db.findOneTodo({ 
+    let todoFromDB = await db.findOneTodo({
       body: body.body,
       share: user._id
     })
@@ -130,7 +135,7 @@ controller.updateTodo = async (ctx) => {
     let todo = ctx.request.body;
 
     ctx.body = await db.findAndUpdateTodo(todo._id, {
-      $set: { 
+      $set: {
         modified: new Date(),
         body: todo.body,
         status: todo.status
@@ -175,10 +180,8 @@ controller.access = async ctx => {
       ctx.body = await db.findAndUpdateTodo(req._id, {
         $set: {
           canEdit: ownerId,
-          request: ''
-        },
-        $pull: {
-          share: userId === ownerId ? '' : userId
+          request: '',
+          share: ''
         }
       })
     }

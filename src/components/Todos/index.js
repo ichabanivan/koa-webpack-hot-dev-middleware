@@ -65,8 +65,8 @@ class Todos extends Component {
         <ShareTodos />
         
         <Input _id={id} />
-        <TodoList _id={id} />
         <Filters />
+        <TodoList _id={id} />
         
         <ModalError />
         <ModalRemoveTodo _id={id} />
