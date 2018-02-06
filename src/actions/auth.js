@@ -57,10 +57,9 @@ export const reg = (user) => {
 export const exit = (user) => {
   return async dispatch => {
     localStorage.removeItem('user');
-    dispatch(push('/login'))
     dispatch({
-      type: ACTIONS.EXIT,
-      user: {}
+      type: ACTIONS.EXIT
     });
+    dispatch(push('/login'))
   }
 };

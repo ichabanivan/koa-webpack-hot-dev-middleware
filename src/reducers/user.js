@@ -7,6 +7,9 @@ export default function user(state = user, action) {
     case CONSTANTS.USER:
       return action.user;
 
+    case CONSTANTS.EXIT:
+      return {};
+
     default:
       return state;
   }
