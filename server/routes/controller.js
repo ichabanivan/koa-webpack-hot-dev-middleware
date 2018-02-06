@@ -88,8 +88,6 @@ controller.listTodos = async (ctx) => {
 
 controller.addTodo = async (ctx) => {
   try {
-    let date = new Date().toLocaleDateString();
-
     let body = await JSON.parse(ctx.request.body);
     let user = ctx.user;
 
@@ -108,8 +106,8 @@ controller.addTodo = async (ctx) => {
       console.log('You have same todo')
       ctx.message = 'You have same todo';
     } else if (body.body && body.status) {
-      body.created = date;
-      body.modified = date;
+      body.created = new Date();
+      body.modified = new Date();
 
       try {
         let todo = await db.addTodo(body)
@@ -128,13 +126,13 @@ controller.addTodo = async (ctx) => {
 
 controller.updateTodo = async (ctx) => {
   try {
-    let date = new Date().toLocaleDateString(); let body = await JSON.parse(ctx.request.body);
+    let body = await JSON.parse(ctx.request.body);
     let userId = ctx.user._id;
     let todo = JSON.parse(ctx.request.body);
 
     ctx.body = await db.findAndUpdateTodo(todo._id, {
-      $set: {
-        modified: date,
+      $set: { 
+        modified: new Date(),
         body: todo.body,
         status: todo.status
       }

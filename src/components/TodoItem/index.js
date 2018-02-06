@@ -13,7 +13,8 @@ class TodoItem extends Component {
       push,
       isActive,
       editTodo,
-      user
+      user,
+      assigned
     } = this.props;
 
     let activeClass = isActive ? 'item--active': '';
@@ -46,9 +47,10 @@ class TodoItem extends Component {
           </div>
 
           <div>
-            <span>Owner: <strong>{ user.username }</strong></span>
-            <div>Created: { todo.created } </div>
-            <div>Мodified: { todo.modified } </div>
+            <div>Owner: <strong>{ user.username }</strong></div>
+            <div>Assigned to: <strong>{assigned.username }</strong></div>
+            <div>Created: { new Date(todo.created).toLocaleDateString() } </div>
+            <div>Мodified: { new Date(todo.modified).toLocaleDateString() }</div>
           </div>
         </div>
       );
@@ -63,7 +65,10 @@ const mapStateToProps = (state, ownProps) => {
   return {
     user: state.users.filter((user) => {
       return ownProps.todo.owner === user._id
-    })[0]
+    })[0],
+    assigned: state.users.filter((user) => {
+      return ownProps.todo.canEdit === user._id
+    })[0],
   }
 }
 
