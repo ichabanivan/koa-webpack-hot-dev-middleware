@@ -66,7 +66,6 @@ const mapStateToProps = (state, ownProps) => {
       return ownProps.todo.owner === user._id
     })[0],
     assigned: state.users.filter((user) => {
-      console.log(ownProps.todo)
       return ownProps.todo.canEdit === user._id
     })[0],
   }
