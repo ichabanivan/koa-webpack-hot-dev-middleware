@@ -5,11 +5,9 @@ import connect from './connect'
 
 let database = {};
 
-connect.then(db => {
-  database.mongo = db.db('todos')
-}).catch(err => {
-  console.log(err)
-})
+database.connect = async function mongo() {
+  database.mongo = await connect()
+}
 
 database.findOneUser = async (user) => {
   return await database.mongo.collection('users').findOne(user)

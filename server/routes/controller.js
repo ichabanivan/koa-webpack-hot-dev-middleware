@@ -4,6 +4,8 @@ import { Base64 } from 'js-base64';
 import config from '../config';
 import db from '../db/db';
 
+db.connect() // вынести в server.js
+ 
 let controller = {};
 
 controller.verify = async (ctx, next) => {
