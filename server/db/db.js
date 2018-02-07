@@ -1,11 +1,14 @@
 import { MongoClient } from 'mongodb';
 import { ObjectId } from 'mongodb';
 import config from '../config';
+import connect from './connect'
 
 let database = {};
 
-MongoClient.connect(config.url, function (err, client) {
-  database.mongo = client.db('todos')
+connect.then(db => {
+  database.mongo = db.db('todos')
+}).catch(err => {
+  console.log(err)
 })
 
 database.findOneUser = async (user) => {
